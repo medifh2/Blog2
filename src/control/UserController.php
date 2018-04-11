@@ -1,43 +1,50 @@
 <?php
-namespace Control;
+namespace control;
 
-use View\View;
-use Model\DbModel;
-use Model\ReaderModel;
-use Model\WriterModel;
-use Model\AdminModel;
-
+use view\View;
+use model\DbModel;
+use model\ReaderModel;
+use model\WriterModel;
+use model\AdminModel;
+use conf\DbConf;
 class UserController {
 
     public function showLoginPage()
     {
-        View:: pageGenerate ('LogView');
+        $view_gen = new View;
+        $view_gen -> pageGenerate ('LogView.html');
     }
 
     public function showSettings()
     {
-        View:: pageGenerate ('UserpageSettingsView');
+        $view_gen = new View;
+        $view_gen -> pageGenerate ('UserpageSettingsView.html');
     }
 
     public function showRegPage()
     {
-        View:: pageGenerate ('RegView');
+        $view_gen = new View;
+        $view_gen -> pageGenerate ('RegView.html');
     }
 
     public function showUserPage()
     {
-        View:: pageGenerate ('UserpageView');
+        $view_gen = new View;
+        $view_gen -> pageGenerate ('UserpageView.html');
     }
 
     public function logout()
     {
         $_SESSION['is_login'] = 0;
-        View::pageGenerate ('MainpageView');
+        $vie_wgen = new View;
+        $vie_wgen -> pageGenerate ('MainpageView.html');
     }
 
     public function login()
     {
-        $connect = new DbModel;
+        $view_gen = new View;
+        $dbconf = new DbConf;
+        $connect = new DbModel($dbconf);
         $login = $_POST["login"];
         $pass = md5($_POST["pass"]);
         if ($userdate = $connect -> loginUser($login, $pass))
@@ -49,18 +56,20 @@ class UserController {
             }
             $_SESSION['is_login'] = 1;
             $_SESSION['Userdata'] = $user -> allData();
-            View::pageGenerate ('MainpageView');
+            $view_gen -> pageGenerate ('MainpageView.html');
         }
         else {
             echo "Wrong password or login";
-            View::pageGenerate ('LogView');
+            $view_gen -> pageGenerate ('LogView.html');
         }
 
 
     }
     public function registration()
     {
-        $connect = new DbModel;
+        $view_gen = new View;
+        $dbconf = new DbConf;
+        $connect = new DbModel($dbconf);
 
         $_POST["pass"] = str_replace(' ','',$_POST["pass"]);
         $_POST["r_pass"] = str_replace(' ','',$_POST["r_pass"]);
@@ -70,7 +79,7 @@ class UserController {
         $r_pass = $_POST["r_pass"];
         if (!$pass || !$_POST["login"] || !$_POST["username"] || ($pass !== $r_pass))
         {
-            View::pageGenerate ('RegView');
+            $view_gen -> pageGenerate ('RegView.html');
             die ("incorrect data!");
         }
         $pass = md5($pass);
@@ -80,25 +89,25 @@ class UserController {
                 'pass' =>$pass,
                 'username' => $_POST["username"],
                 'about_me' => $_POST["about_me"],
-                'lvl' => 'reader',
-                'regdate' => date('jS \of F Y'),
-                'userconfigs' => ''
+                'lvl' => 'reader'
             ];
         if ($connect -> addUser($user))
         {
             $user = new ReaderModel($user['login'], $user['pass'], $user['username'], $user['about_me']);
             $_SESSION['is_login'] = 1;
             $_SESSION['Userdata'] = $user -> allData();
-            View::pageGenerate ('MainpageView');
+            $view_gen -> pageGenerate ('MainpageView.html');
         }
         else {
-            View::pageGenerate ('RegView');
+            $view_gen -> pageGenerate ('RegView.html');
             die ("A User with such data is already registered!");
         }
     }
     public function editUserData()
     {
-        $connect = new DbModel;
+        $view_gen = new View;
+        $dbconf = new DbConf;
+        $connect = new DbModel($dbconf);
 
         $_POST["n_pass"] = str_replace(' ','',$_POST["n_pass"]);
         $_POST["n_username"] = str_replace(' ','',$_POST["n_username"]);
@@ -119,6 +128,6 @@ class UserController {
 
         if ($_POST["n_username"]) $_SESSION['Userdata']["Username"] = $_POST["n_username"];
         if ($_POST["n_about"]) $_SESSION['Userdata']["About_me"] = $_POST["n_about"];
-        View::pageGenerate ('UserpageView');
+        $view_gen -> pageGenerate ('UserpageView.html');
     }
 }
