@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 
 <html>
-<h2 class = center>ERROR 404</h2>
-<P class = "content">
-Page not found
-</P>
+    <form class="content" >
+
+        <h1>ERROR 404</h1>
+        <br>
+        Page not found
+
+    </form>
 </html>

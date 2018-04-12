@@ -18,11 +18,7 @@ a:active
 
 P.content
 {
-    width: 160px;
-    background: #f0f0f0;
-    border: 1px solid #333;
-    padding: 10px;
-    font-size: 18px;
+
 }
 h3
 {
@@ -45,8 +41,8 @@ textarea.about
 .content
 {
     width:600px;
-
-    position: fixed; top: 30%;
+    position: fixed;
+    top: 30%;
     left: 40%;
 }
 h2.center

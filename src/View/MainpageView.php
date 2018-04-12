@@ -1,5 +1,5 @@
 <!DOCTYPE html>
 
 <html>
-<P class = content>Main page</P>
+<h1 class = content>Main page</h1>
 </html>

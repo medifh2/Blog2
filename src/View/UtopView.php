@@ -7,7 +7,8 @@
 </head>
 <nav>
 <P class = menu>
-    <a  href = "/"> Blog feed </a> | <a href = "/userpage"> My blog </a> | <a href = "/logout"> Logout </a>
+    <a  href = "/"> Blog feed </a> | <a href = "/userpage"> My blog </a>| <a href = "/profile"> My profile </a>
+    | <a href = "/logout"> Logout </a>
 </P>
 </nav>
 

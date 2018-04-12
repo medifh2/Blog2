@@ -10,8 +10,6 @@
         </h3>
         <h4><a  href = "/settings"> Edit </a> </h4>
 
-        <h3>Posts:<br>
-        </h3>
     </form>
     </body>
 </html>

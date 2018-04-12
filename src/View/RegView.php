@@ -17,9 +17,7 @@
         <li>
             <input type = "password" name = "r_pass" placeholder="Repeat password"  required/>
         </li>
-        <li>
-          <input type = "text" name = "about_me" placeholder="About me" />
-        </li>
+
         <li>
            <button class="submit" type="submit">Registration</button>
         </li>

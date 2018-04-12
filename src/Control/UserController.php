@@ -16,7 +16,7 @@ class UserController {
 
     public function showSettings()
     {
-        View:: pageGenerate ('UserpageSettingsView');
+        View:: pageGenerate ('UserProfileSettingsView');
     }
 
     public function showRegPage()
@@ -24,9 +24,13 @@ class UserController {
         View:: pageGenerate ('RegView');
     }
 
-    public function showUserPage()
+    public function showUserProfile()
     {
-        View:: pageGenerate ('UserpageView');
+        View:: pageGenerate ('UserProfileView');
+    }
+    public function showUserBlog()
+    {
+        View:: pageGenerate ('UserBlogView');
     }
 
     public function logout()
@@ -39,10 +43,10 @@ class UserController {
     {
         $connect = new DbModel;
         $login = $_POST["login"];
-        $pass = md5($_POST["pass"]);
+        $pass = ($_POST["pass"]);
         if ($userdate = $connect -> loginUser($login, $pass))
         {
-            switch ($userdate['accesslvl']) {
+            switch ($userdate['Accesslvl']) {
                 case 'reader' : $user = new ReaderModel($userdate['Login'], $userdate['Password'], $userdate['Username'], $userdate['About_me']); break;
                 case 'writer' : $user = new WriterModel($userdate['Login'], $userdate['Password'], $userdate['Username'], $userdate['About_me']); break;
                 case 'admin' : $user = new AdminModel($userdate['Login'], $userdate['Password'], $userdate['Username'], $userdate['About_me']); break;
@@ -73,13 +77,13 @@ class UserController {
             View::pageGenerate ('RegView');
             die ("incorrect data!");
         }
-        $pass = md5($pass);
+        $pass = ($pass);
         $user =
             [
                 'login' => $_POST["login"],
                 'pass' =>$pass,
                 'username' => $_POST["username"],
-                'about_me' => $_POST["about_me"],
+                'about_me' => '',
                 'lvl' => 'reader',
                 'regdate' => date('jS \of F Y'),
                 'userconfigs' => ''
@@ -105,7 +109,7 @@ class UserController {
         if (isset($_POST["n_pass"]))
         {
             $pass = $_POST["n_pass"];
-            $pass = md5($pass);
+            $pass = ($pass);
         }
         $user =
             [
