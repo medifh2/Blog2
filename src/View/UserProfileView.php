@@ -2,7 +2,7 @@
 
 <html>
     <body>
-    <form class="content">
+    <form class = "content">
 
         <h1><?php echo ($_SESSION['Userdata']['Username']) ?></h1>
         <h3><?php echo ($_SESSION['Userdata']['Lvl']) ?><br>

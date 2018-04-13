@@ -2,12 +2,13 @@
 namespace Control;
 
 use View\View;
-use Model\DbModel;
+use Model\UserDBModel;
 use Model\ReaderModel;
 use Model\WriterModel;
 use Model\AdminModel;
 
-class UserController {
+class UserController extends Controller
+{
 
     public function showLoginPage()
     {
@@ -28,43 +29,42 @@ class UserController {
     {
         View:: pageGenerate ('UserProfileView');
     }
-    public function showUserBlog()
-    {
-        View:: pageGenerate ('UserBlogView');
-    }
 
     public function logout()
     {
-        $_SESSION['is_login'] = 0;
+        $_SESSION['is_login'] = false;
+        unset($_SESSION['Userdata']);
+        unset($_SESSION['Userposts']);
         View::pageGenerate ('MainpageView');
     }
 
     public function login()
     {
-        $connect = new DbModel;
+        $connect = new UserDBModel;
         $login = $_POST["login"];
         $pass = ($_POST["pass"]);
-        if ($userdate = $connect -> loginUser($login, $pass))
+        if ($userdata = $connect -> loginUser($login, $pass))
         {
-            switch ($userdate['Accesslvl']) {
-                case 'reader' : $user = new ReaderModel($userdate['Login'], $userdate['Password'], $userdate['Username'], $userdate['About_me']); break;
-                case 'writer' : $user = new WriterModel($userdate['Login'], $userdate['Password'], $userdate['Username'], $userdate['About_me']); break;
-                case 'admin' : $user = new AdminModel($userdate['Login'], $userdate['Password'], $userdate['Username'], $userdate['About_me']); break;
+            switch ($userdata['Accesslvl']) {
+                case 'reader' : $user = new ReaderModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me']); break;
+                case 'writer' : $user = new WriterModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me']); break;
+                case 'admin' : $user = new AdminModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me']); break;
             }
             $_SESSION['is_login'] = 1;
             $_SESSION['Userdata'] = $user -> allData();
             View::pageGenerate ('MainpageView');
         }
-        else {
-            echo "Wrong password or login";
-            View::pageGenerate ('LogView');
-        }
+        else
+            {
+                $_SESSION['error_message'] = 'Wrong password or login';
+                View::pageGenerate ('LogView');
+            }
 
 
     }
     public function registration()
     {
-        $connect = new DbModel;
+        $connect = new UserDBModel;
 
         $_POST["pass"] = str_replace(' ','',$_POST["pass"]);
         $_POST["r_pass"] = str_replace(' ','',$_POST["r_pass"]);
@@ -74,10 +74,10 @@ class UserController {
         $r_pass = $_POST["r_pass"];
         if (!$pass || !$_POST["login"] || !$_POST["username"] || ($pass !== $r_pass))
         {
+            $_SESSION['error_message'] = 'Incorrect data!' ;
             View::pageGenerate ('RegView');
-            die ("incorrect data!");
+            return;
         }
-        $pass = ($pass);
         $user =
             [
                 'login' => $_POST["login"],
@@ -96,20 +96,20 @@ class UserController {
             View::pageGenerate ('MainpageView');
         }
         else {
+            $_SESSION['error_message'] = 'A User with such data is already registered!' ;
             View::pageGenerate ('RegView');
-            die ("A User with such data is already registered!");
+            return;
         }
     }
     public function editUserData()
     {
-        $connect = new DbModel;
+        $connect = new UserDBModel;
 
         $_POST["n_pass"] = str_replace(' ','',$_POST["n_pass"]);
         $_POST["n_username"] = str_replace(' ','',$_POST["n_username"]);
         if (isset($_POST["n_pass"]))
         {
             $pass = $_POST["n_pass"];
-            $pass = ($pass);
         }
         $user =
             [

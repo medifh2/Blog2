@@ -6,9 +6,10 @@ class View
     static function pageGenerate ($file)
     {
 
-            if ($_SESSION['is_login']) {
-                include 'UtopView.php';
-            }
+        if ($_SESSION['is_login'])
+        {
+            include 'UtopView.php';
+        }
         else include 'TopView.php';
         include $file.".php";
     }

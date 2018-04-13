@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 
 <html>
+
 <form class="form" method = "post" action = "reguser">
     <ul>
+            <?php if ($_SESSION['error_message'])
+            echo $_SESSION['error_message']."<br>";
+            $_SESSION['error_message'] = 0;
+            ?>
         <li>
             <h3>Registration</h3><br>
         </li>

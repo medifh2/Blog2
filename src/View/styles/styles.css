@@ -38,12 +38,20 @@ textarea.about
 {
 
 }
-.content
+form.content
 {
     width:600px;
-    position: fixed;
-    top: 30%;
-    left: 40%;
+    margin-right: 30%;
+    margin-left: 30%;
+    margin-top: 10%;
+
+
+}
+div.content
+{
+    background: whitesmoke;
+    border: 1px solid powderblue;
+
 }
 h2.center
 {
@@ -62,6 +70,14 @@ h2.center
     list-style-type:none;
 }
 .form li{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    position:relative;
+}
+.content ul {
+    list-style-type:none;
+}
+.content li{
     padding:12px;
     border-bottom:1px solid #eee;
     position:relative;

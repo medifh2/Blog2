@@ -1,8 +1,6 @@
 <?php
 namespace Model;
 
-use Model\AnonModel;
-
 class ReaderModel extends AnonModel
 {
 protected $login, $pass, $username, $about;

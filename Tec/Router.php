@@ -11,14 +11,18 @@
                 '/' => ['Control' => 'MainpageController', 'Action' => 'showMainPage'],
                 '/login' => ['Control' => 'UserController', 'Action' => 'showLoginPage'],
                 '/registration' => ['Control' => 'UserController', 'Action' => 'showRegPage'],
-                '/userpage' => ['Control' => 'UserController', 'Action' => 'showUserBlog'],
+                '/userpage' => ['Control' => 'BlogController', 'Action' => 'showUserBlog'],
                 '/profile' => ['Control' => 'UserController', 'Action' => 'showUserProfile'],
                 '/loguser' => ['Control' => 'UserController', 'Action' => 'login'],
                 '/reguser' => ['Control' => 'UserController', 'Action' => 'registration'],
                 '/edituser' => ['Control' => 'UserController', 'Action' => 'editUserData'],
                 '/logout' => ['Control' => 'UserController', 'Action' => 'logout'],
                 '/changeabout' => ['Control' => 'UserController', 'Action' => 'changeAbout'],
-                '/settings' => ['Control' => 'UserController', 'Action' => 'showSettings']
+                '/blogcreate' => ['Control' => 'BlogController', 'Action' => 'showBlogCreatePage'],
+                '/settings' => ['Control' => 'UserController', 'Action' => 'showSettings'],
+                '/css' => ['Control' => 'UserController', 'Action' => 'showSettings'],
+                '/more' => ['Control' => 'MainpageController', 'Action' => 'showMore'],
+                '/createpost' => ['Control' => 'BlogController', 'Action' => 'CreatePost']
             ];
             if(isset($routing[$route]))
             {

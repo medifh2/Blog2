@@ -1,7 +1,7 @@
 <?php
 namespace Model;
 
-class AnonModel
+class AnonModel extends Model
 {
     protected $lvl;
 
@@ -11,6 +11,7 @@ class AnonModel
         $this -> lvl = "anon";
     }
 
+    public
     function getLvl()
     {
             return $this -> lvl;
