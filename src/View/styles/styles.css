@@ -2,6 +2,30 @@ body
 {
     background: gainsboro;
 }
+img
+{
+    max-height: 30%;
+    width: auto;
+    padding: 5px;
+}
+h4
+{
+    overflow: hidden;
+    max-height:20%;
+    max-width:100%;
+    line-height: 25px;
+    padding: 5px;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+div.content
+{
+    background: whitesmoke;
+    border: 1px solid powderblue;
+    width: 100%;
+    height: 350px;
+}
 a
 {
     color: red;
@@ -16,19 +40,12 @@ a:active
     color: red;
 }
 
-P.content
-{
-
-}
 h3
 {
 
     word-wrap: break-word;
     display: block;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
+
 }
 P.menu
 {
@@ -45,13 +62,13 @@ form.content
     margin-left: 30%;
     margin-top: 10%;
 
-
 }
-div.content
+form.put
 {
-    background: whitesmoke;
-    border: 1px solid powderblue;
-
+    width:600px;
+    margin-right: 30%;
+    margin-left: 30%;
+    margin-top: 10%;
 }
 h2.center
 {
@@ -84,6 +101,14 @@ h2.center
 }
 
 .form label
+{
+    width:150px;
+    margin-top: 3px;
+    display:inline-block;
+    float:left;
+    padding:3px;
+}
+.form div
 {
     width:150px;
     margin-top: 3px;

@@ -71,5 +71,12 @@ class BlogController extends Controller
         $_SESSION['Userposts'] = $post;
         View:: pageGenerate ('UserBlogView');
     }
+    public function fullPost()
+    {
 
+        $connect = new PostDBModel;
+
+        $_SESSION['PostID'];
+        View:: pageGenerate ('FullPostView');
+    }
 }

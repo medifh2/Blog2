@@ -2,8 +2,14 @@
 
 <html>
     <body>
-    <form class = "content">
 
+
+
+    <form class = "content">
+        <?php if ($_SESSION['message'])
+            echo $_SESSION['message']."<br>";
+        $_SESSION['message'] = 0;
+        ?>
         <h1><?php echo ($_SESSION['Userdata']['Username']) ?></h1>
         <h3><?php echo ($_SESSION['Userdata']['Lvl']) ?><br>
         About <?php echo ($_SESSION['Userdata']['Username']) ?>: <?php echo ' '.($_SESSION['Userdata']['About_me']) ?><br>

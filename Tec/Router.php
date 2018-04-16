@@ -22,6 +22,7 @@
                 '/settings' => ['Control' => 'UserController', 'Action' => 'showSettings'],
                 '/css' => ['Control' => 'UserController', 'Action' => 'showSettings'],
                 '/more' => ['Control' => 'MainpageController', 'Action' => 'showMore'],
+                '/fullpost' => ['Control' => 'BlogController', 'Action' => 'fullPost'],
                 '/createpost' => ['Control' => 'BlogController', 'Action' => 'CreatePost']
             ];
             if(isset($routing[$route]))

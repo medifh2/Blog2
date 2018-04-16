@@ -52,6 +52,7 @@ class UserController extends Controller
             }
             $_SESSION['is_login'] = 1;
             $_SESSION['Userdata'] = $user -> allData();
+            $_SESSION['message'] = "Hello, ".$_SESSION['Userdata']['Username'];
             View::pageGenerate ('MainpageView');
         }
         else
@@ -123,6 +124,8 @@ class UserController extends Controller
 
         if ($_POST["n_username"]) $_SESSION['Userdata']["Username"] = $_POST["n_username"];
         if ($_POST["n_about"]) $_SESSION['Userdata']["About_me"] = $_POST["n_about"];
-        View::pageGenerate ('UserpageView');
+        $_SESSION['message'] = "Updates saved";
+        View::pageGenerate ('UserProfileView');
+
     }
 }

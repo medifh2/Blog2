@@ -15,8 +15,6 @@ class MainPageController extends Controller
         $_SESSION['Numposts'] = 2;
         $connect = new PostDBModel;
         $_SESSION['Islast'] = ($connect -> getNumRows() >= $_SESSION['Numposts']);
-        print_r( $connect -> getNumRows());
-        echo $_SESSION['Numposts'];
         $post = $connect -> getTenPosts($_SESSION['Numposts']);
         foreach ($post as &$exemp)
         {
