@@ -20,7 +20,7 @@ class PostDBModel extends DBModel
         return true;
     }
 
-    function getLoginPost($login)
+    function getForLoginPost($login)
     {
         $pdo = $this -> pdo;
         $st = $pdo -> prepare ('SELECT * FROM Blog.posts WHERE (Author = :login) ORDER BY DatePub Desc');
@@ -28,6 +28,16 @@ class PostDBModel extends DBModel
         $st -> execute();
         $res = $st -> fetchAll();
         return $res;
+    }
+
+    function getForIDPost($post_ID)
+    {
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare ('SELECT * FROM Blog.posts WHERE (ID = :ID)');
+        $st -> bindParam(':ID', $post_ID);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res[0];
     }
 
     function getTenPosts($num)

@@ -2,9 +2,14 @@
 
 <html>
 <body>
-<form class="form" action = "/edituser" method = "post" name = "edit_form">
-    <ul>
 
+<form class="form" action = "/edituser" method = "post" name = "edit_form">
+
+    <ul>
+        <?php if ($_SESSION['error_message'])
+            echo '<li>'.$_SESSION['error_message']."</li><br>";
+        $_SESSION['error_message'] = 0;
+        ?>
         <li>
             <label >Your Login:</label>
             <label><?php echo $_SESSION['Userdata']['Login'] ?></label><br>
@@ -20,10 +25,18 @@
         </li>
 
         <li>
+            <label for = "c_pass">Current password: </label>
+            <input type = "password" name = "c_pass" placeholder = "Current password" required ><br>
+        </li>
+
+        <li>
             <label for = "n_about">About me:</label>
-            <textarea name = "n_about" cols = "60" rows = "15">
-            <?php echo $_SESSION['Userdata']['About_me'] ?>
-            </textarea><br>
+            <textarea name = "n_about" title = "n_about" ><?php
+                if (isset($_POST['n_about'])) {
+                    echo $_POST['n_about'];
+                    }
+                else echo $_SESSION['Userdata']['About_me']
+                ?></textarea><br>
         </li>
 
         <li>

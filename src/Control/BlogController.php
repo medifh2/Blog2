@@ -63,7 +63,7 @@ class BlogController extends Controller
     {
 
         $connect = new PostDBModel;
-        $post = $connect->getLoginPost($_SESSION['Userdata']['Login']);
+        $post = $connect -> getForLoginPost($_SESSION['Userdata']['Login']);
         foreach ($post as &$exemp)
         {
             $exemp['Image'] = 'images/'.$exemp['Image'];
@@ -73,10 +73,10 @@ class BlogController extends Controller
     }
     public function fullPost()
     {
-
         $connect = new PostDBModel;
-
-        $_SESSION['PostID'];
+        $post = $connect -> getForIDPost($_POST["PostID"]);
+        $_SESSION["ForFullPost"] = $post;
+        $_SESSION["ForFullPost"]["Image"] = 'images/'.$_SESSION["ForFullPost"]["Image"];
         View:: pageGenerate ('FullPostView');
     }
 }

@@ -105,8 +105,8 @@ class UserController extends Controller
     public function editUserData()
     {
         $connect = new UserDBModel;
-
         $_POST["n_pass"] = str_replace(' ','',$_POST["n_pass"]);
+        $_POST["c_pass"] = str_replace(' ','',$_POST["c_pass"]);
         $_POST["n_username"] = str_replace(' ','',$_POST["n_username"]);
         if (isset($_POST["n_pass"]))
         {
@@ -116,16 +116,21 @@ class UserController extends Controller
             [
                 'login' => $_SESSION['Userdata']['Login'],
                 'pass' => $pass,
+                'c_pass' => $_POST["c_pass"],
                 'username' => $_POST["n_username"],
                 'about_me' => $_POST["n_about"],
             ];
-        if ($user["username"])
-        $connect -> editUser($user);
-
-        if ($_POST["n_username"]) $_SESSION['Userdata']["Username"] = $_POST["n_username"];
-        if ($_POST["n_about"]) $_SESSION['Userdata']["About_me"] = $_POST["n_about"];
-        $_SESSION['message'] = "Updates saved";
-        View::pageGenerate ('UserProfileView');
-
+        if ($connect -> editUser($user))
+        {
+            if ($_POST["n_username"]) $_SESSION['Userdata']["Username"] = $_POST["n_username"];
+            if ($_POST["n_about"]) $_SESSION['Userdata']["About_me"] = $_POST["n_about"];
+            $_SESSION['message'] = "Updates saved";
+            View::pageGenerate('UserProfileView');
+        }
+        else
+            {
+                $_SESSION['error_message'] = "Wrong password";
+                View::pageGenerate('UserProfileSettingsView');
+            }
     }
 }

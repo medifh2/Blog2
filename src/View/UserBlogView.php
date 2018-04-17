@@ -3,7 +3,7 @@
 <html>
 
 <body>
-<form class="content">
+<div class = "content">
 
     <?php if (($_SESSION['Userdata']['Lvl'] === 'writer') || ($_SESSION['Userdata']['Lvl'] === 'admin'))
         echo '<h4><a  href = "/blogcreate"> Create new post </a> </h4>';
@@ -13,17 +13,21 @@
     <?php
         foreach ($_SESSION['Userposts'] as $post)
         {?>
-            <div class = "content">
-                <h2> <?php echo $post['Title'] ?> </h2>
-                <?php echo $post['Author'].",  ".$post['DatePub'] ?>
-                <h4><?php echo $post['Text'] ?> </h4>
-                <?php if ($post['Image'] !== 'images/') echo "<img src = '{$post['Image']}'>"?>
-                <br>
-                <a  href = 'fullpost'> Full </a>
-            </div>
-            </>
+            <form class="put" method = "post" action = "fullpost">
+            <h2> <?php echo $post['Title'] ?> </h2>
+            <h5> <?php echo $post['Author'].",  ".$post['DatePub'] ?> </h5>
+            <h4> <?php echo $post['Text'] ?> </h4>
+            <?php
+            if ($post['Image'] !== 'images/') echo "<img src = '{$post['Image']}'>"
+            ?>
+            <br>
+
+            <input type = "hidden" name = "PostID" value = <?php echo $post['ID'] ?> >
+            <button class = "put" type="submit">Full</button>
+        </form>
+
         <?php   } ?>
 
-</form>
+</div>
 </body>
 </html>

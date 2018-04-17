@@ -44,6 +44,11 @@ class UserDBModel extends DBModel
     function editUser($user)
     {
         $pdo = $this -> pdo;
+        $st_check = $pdo -> prepare("SELECT * FROM Blog.users WHERE Login=:login");
+        $st_check->bindParam(':login', $user['login']);
+        $st_check->execute();
+        $res = $st_check -> fetchAll();
+        if ($res[0]['Password'] !== $user['c_pass']) return false;
         if ($user['username'])
         {
             $st_name = $pdo -> prepare("UPDATE Blog.users SET Username=:username WHERE Login=:login");
@@ -65,5 +70,6 @@ class UserDBModel extends DBModel
             $st_about->bindParam(':about_me', $user['about_me']);
             $st_about->execute();
         }
+        return true;
     }
 }
