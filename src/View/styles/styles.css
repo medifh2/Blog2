@@ -16,13 +16,26 @@ img.full
     height: auto;
     padding: 5px;
 }
+
+div
+{
+    width:600px;
+    margin-right: 30%;
+    margin-left: 30%;
+}
+
 div.content
 {
     width:600px;
     margin-right: 30%;
     margin-left: 30%;
     margin-top: 10%;
+}
 
+div.comment
+{
+    width:500px;
+    margin-left: 5%;
 }
 
 form.put
@@ -44,6 +57,20 @@ div.fullpost
     background: whitesmoke;
     border: 1px solid powderblue;
     position:relative;
+}
+
+h6.error
+{
+    font-size: 1em;
+    color: #B22222;
+    background-color: #F08080;
+}
+
+h6.success
+{
+    font-size: 1em;
+    color: #008000;
+    background-color: #98FB98;
 }
 
 a
@@ -136,6 +163,18 @@ h5 {
     margin-right: 0;
     font-weight: lighter;
 }
+
+h5.comment {
+    padding: 5px;
+    display: block;
+    font-size: .83em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
 .form {
     padding: 50px;
     position: fixed;

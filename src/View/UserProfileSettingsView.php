@@ -4,12 +4,14 @@
 <body>
 
 <form class="form" action = "/edituser" method = "post" name = "edit_form">
-
-    <ul>
+    <h6 class = 'error'>
         <?php if ($_SESSION['error_message'])
             echo '<li>'.$_SESSION['error_message']."</li><br>";
         $_SESSION['error_message'] = 0;
         ?>
+    </h6>
+    <ul>
+
         <li>
             <label >Your Login:</label>
             <label><?php echo $_SESSION['Userdata']['Login'] ?></label><br>

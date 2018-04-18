@@ -5,11 +5,12 @@
 <body>
     <div class = "content">
 
-    <?php if ($_SESSION['message'])
+        <h6 class = 'success'>
+        <?php if ($_SESSION['message'])
         echo $_SESSION['message']."<br>";
-    $_SESSION['message'] = 0;
-    ?>
-
+        $_SESSION['message'] = 0;
+        ?>
+        </h6>
 
     <h1>Main page</h1>
 
@@ -27,10 +28,10 @@
             <br>
 
             <input type = "hidden" name = "PostID" value = <?php echo $post['ID'] ?> >
-            <button class = "put" type="submit">Full</button>
+            <button class = "put" type="submit">Full post</button>
         </form>
 
-    <?php   } ?>
+    <?php } ?>
     <?php if ($_SESSION['Islast']) echo "<a  href = 'more'> More </a>" ?>
     </div>
 </body>

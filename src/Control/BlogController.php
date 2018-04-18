@@ -3,6 +3,7 @@ namespace Control;
 
 use View\View;
 use Model\PostDBModel;
+use Model\CommDBModel;
 
 class BlogController extends Controller
 {
@@ -48,20 +49,16 @@ class BlogController extends Controller
             ];
         if ($connect -> addPost($post))
         {
-            $connect = new PostDBModel;
-            $post = $connect->getLoginPost($_SESSION['Userdata']['Login']);
-            foreach ($post as &$exemp)
-            {
-                $exemp['Image'] = 'images/'.$exemp['Image'];
-            }
-            $_SESSION['Userposts'] = $post;
-            View::pageGenerate ('UserBlogView');
+            $this -> showUserBlog();
+        }
+        else {
+            $_SESSION['error_message'] = 'Unknown error';
+            View::pageGenerate ('BlogCreateView');
         }
     }
 
     public function showUserBlog()
     {
-
         $connect = new PostDBModel;
         $post = $connect -> getForLoginPost($_SESSION['Userdata']['Login']);
         foreach ($post as &$exemp)
@@ -71,12 +68,28 @@ class BlogController extends Controller
         $_SESSION['Userposts'] = $post;
         View:: pageGenerate ('UserBlogView');
     }
+
     public function fullPost()
     {
-        $connect = new PostDBModel;
-        $post = $connect -> getForIDPost($_POST["PostID"]);
+
+
+        $connect_postDB = new PostDBModel;
+
+        $post = $connect_postDB -> getForIDPost($_POST["PostID"]);
         $_SESSION["ForFullPost"] = $post;
+        $_SESSION["ForFullPost"]["PostID"] = $_POST["PostID"];
         $_SESSION["ForFullPost"]["Image"] = 'images/'.$_SESSION["ForFullPost"]["Image"];
+
+        $connect_commDB = new CommDBModel;
+        if ($comment = $connect_commDB -> getForPostIDComment($_SESSION["ForFullPost"]["PostID"]))
+        {
+            $_SESSION["Comments"] = $comment;
+        }
+        else
+        {
+            $_SESSION["Comments"] = false;
+        }
+
         View:: pageGenerate ('FullPostView');
     }
 }

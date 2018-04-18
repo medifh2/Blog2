@@ -23,7 +23,7 @@
             <br>
 
             <input type = "hidden" name = "PostID" value = <?php echo $post['ID'] ?> >
-            <button class = "put" type="submit">Full</button>
+            <button class = "put" type="submit">Full post</button>
         </form>
 
         <?php   } ?>

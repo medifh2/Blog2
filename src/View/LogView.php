@@ -2,10 +2,12 @@
 
 <html>
 <form class="form" method = "post" action = "loguser">
+    <h6 class = 'error'>
     <?php if ($_SESSION['error_message'])
         echo $_SESSION['error_message']."<br>";
     $_SESSION['error_message'] = 0;
     ?>
+    </h6>
     <ul>
         <li>
             <h3>Login</h3><br>

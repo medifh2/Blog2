@@ -23,7 +23,8 @@
                 '/css' => ['Control' => 'UserController', 'Action' => 'showSettings'],
                 '/more' => ['Control' => 'MainpageController', 'Action' => 'showMore'],
                 '/fullpost' => ['Control' => 'BlogController', 'Action' => 'fullPost'],
-                '/createpost' => ['Control' => 'BlogController', 'Action' => 'CreatePost']
+                '/createpost' => ['Control' => 'BlogController', 'Action' => 'CreatePost'],
+                '/createcomment' => ['Control' => 'CommentController', 'Action' => 'CreateComment']
             ];
             if(isset($routing[$route]))
             {
