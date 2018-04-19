@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <html>
-
 <body>
 <div class = "fullpost">
 
@@ -10,6 +9,7 @@
         echo $_SESSION['message']."<br>";
     $_SESSION['message'] = 0;
     ?>
+
     </h6>
 
             <h2> <?php echo $_SESSION["ForFullPost"]['Title'] ?> </h2>
@@ -42,5 +42,4 @@
 
 
 </body>
-
 </html>

@@ -193,7 +193,16 @@ h5.comment {
     position:relative;
 }
 
-.form label
+ label
+{
+    width:180px;
+    margin-top: 3px;
+    display:inline-block;
+    float:left;
+    padding:3px;
+}
+
+ div
 {
     width:150px;
     margin-top: 3px;
@@ -201,16 +210,11 @@ h5.comment {
     float:left;
     padding:3px;
 }
-
-.form div
+input.date
 {
+    height:20px;
     width:150px;
-    margin-top: 3px;
-    display:inline-block;
-    float:left;
-    padding:3px;
 }
-
 .form input
 {
     height:20px;

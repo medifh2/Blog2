@@ -13,7 +13,9 @@
         </h6>
 
     <h1>Main page</h1>
-
+        <form method = "post" action = "searching">
+           <button class = "submit" type="submit">Search</button>
+        </form>
     <?php
     foreach ($_SESSION['Allposts'] as $post)
     {?>

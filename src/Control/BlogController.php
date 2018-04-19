@@ -4,6 +4,7 @@ namespace Control;
 use View\View;
 use Model\PostDBModel;
 use Model\CommDBModel;
+use Model\UserDBModel;
 
 class BlogController extends Controller
 {
@@ -18,7 +19,7 @@ class BlogController extends Controller
         View::pageGenerate ('BlogCreateView');
     }
 
-    public function CreatePost()
+    public function createPost()
     {
         $connect = new PostDBModel;
         if ((!isset($_POST["text"]) && !isset($_FILES["image"])) || (!$_POST["title"]))
@@ -44,7 +45,7 @@ class BlogController extends Controller
                 'title' => $_POST["title"],
                 'author' => $_SESSION['Userdata']['Login'],
                 'text' => $text,
-                'image' => $image,
+                'image' => 'images/'.$image,
                 'datepub' => date("y-m-d H:i:s ")
             ];
         if ($connect -> addPost($post))
@@ -61,17 +62,34 @@ class BlogController extends Controller
     {
         $connect = new PostDBModel;
         $post = $connect -> getForLoginPost($_SESSION['Userdata']['Login']);
-        foreach ($post as &$exemp)
-        {
-            $exemp['Image'] = 'images/'.$exemp['Image'];
-        }
+
         $_SESSION['Userposts'] = $post;
         View:: pageGenerate ('UserBlogView');
+    }
+
+    public function searching()
+    {
+        $connect_post = new PostDBModel;
+        $connect_user = new UserDBModel;
+        $login = $_POST["Author_login"];
+        $username = $_POST["Author_username"];
+        $date_from = $_POST["From"];
+        $date_to = $_POST["From"];
+        $post = $connect_post -> getForDataPost($login, $username, $date_from, $date_to);
+        $author = $connect_user -> getUserInfo($login, $username);
+        $_SESSION["Found_auhor"] = $author;
+        $_SESSION["Found_post"] = $post;
+        View:: pageGenerate ('SearchResultView');
     }
 
     public function fullPost()
     {
 
+        if (!isset($_POST["PostID"]))
+        {
+            View:: pageGenerate ('Error404View');
+            return;
+        }
 
         $connect_postDB = new PostDBModel;
 
@@ -92,4 +110,7 @@ class BlogController extends Controller
 
         View:: pageGenerate ('FullPostView');
     }
+
+
+
 }

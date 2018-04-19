@@ -41,6 +41,7 @@ class UserDBModel extends DBModel
         if ($res) $res = $res[0];
         return $res;
     }
+
     function editUser($user)
     {
         $pdo = $this -> pdo;
@@ -72,4 +73,37 @@ class UserDBModel extends DBModel
         }
         return true;
     }
+
+    function getUserInfo($login, $user)
+    {
+        $pdo = $this -> pdo;
+        $st_check = $pdo -> prepare("SELECT * FROM Blog.users WHERE Login=:login");
+        $st_check->bindParam(':login', $user['login']);
+        $st_check->execute();
+        $res = $st_check -> fetchAll();
+        if ($res[0]['Password'] !== $user['c_pass']) return false;
+        if ($user['username'])
+        {
+            $st_name = $pdo -> prepare("UPDATE Blog.users SET Username=:username WHERE Login=:login");
+            $st_name->bindParam(':login', $user['login']);
+            $st_name->bindParam(':username', $user['username']);
+            $st_name->execute();
+        }
+        if ($user['pass'])
+        {
+            $st_pass = $pdo -> prepare("UPDATE Blog.users SET Password=:pass WHERE Login=:login");
+            $st_pass->bindParam(':login', $user['login']);
+            $st_pass->bindParam(':pass', $user['pass']);
+            $st_pass->execute();
+        }
+        if ($user['about_me'])
+        {
+            $st_about = $pdo -> prepare("UPDATE Blog.users SET About_me=:about_me WHERE Login=:login");
+            $st_about->bindParam(':login', $user['login']);
+            $st_about->bindParam(':about_me', $user['about_me']);
+            $st_about->execute();
+        }
+        return true;
+    }
+
 }

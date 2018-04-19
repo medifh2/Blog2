@@ -63,6 +63,7 @@ class UserController extends Controller
 
 
     }
+
     public function registration()
     {
         $connect = new UserDBModel;
@@ -102,6 +103,7 @@ class UserController extends Controller
             return;
         }
     }
+
     public function editUserData()
     {
         $connect = new UserDBModel;

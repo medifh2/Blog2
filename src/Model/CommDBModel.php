@@ -38,24 +38,4 @@ class CommDBModel extends DBModel
         $res = $st -> fetchAll();
         return $res;
     }
-
-    function getTenComments($num)
-    {
-        $pdo = $this -> pdo;
-
-        $st = $pdo -> prepare ('SELECT * FROM Blog.comments ORDER BY DatePub Desc LIMIT :num');
-        $st -> bindParam(':num', $num);
-
-        $st -> execute();
-        $res = $st -> fetchAll();
-        return $res;
-    }
-    function getNumRows()
-    {
-        $pdo = $this -> pdo;
-        $st = $pdo -> prepare ('SELECT COUNT(*) FROM Blog.comments');
-        $st -> execute();
-        $res = $st -> fetchAll();
-        return $res[0]['COUNT(*)'];
-    }
 }

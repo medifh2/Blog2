@@ -17,6 +17,7 @@
         </li>
         <li>
             <input type = "text" name = "login" placeholder="Login" required/>
+        </li>
         <li>
             <input type = "text" name = "username" placeholder="Username"  required/>
         </li>

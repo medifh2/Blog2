@@ -30,6 +30,12 @@ class PostDBModel extends DBModel
         return $res;
     }
 
+    function getForDataPost($login, $username, $date_from, $date_to)
+    {
+
+    }
+
+
     function getForIDPost($post_ID)
     {
         $pdo = $this -> pdo;
@@ -40,7 +46,7 @@ class PostDBModel extends DBModel
         return $res[0];
     }
 
-    function getTenPosts($num)
+    function getNumPosts($num)
     {
         $pdo = $this -> pdo;
 

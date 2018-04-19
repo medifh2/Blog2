@@ -23,8 +23,9 @@
                 '/css' => ['Control' => 'UserController', 'Action' => 'showSettings'],
                 '/more' => ['Control' => 'MainpageController', 'Action' => 'showMore'],
                 '/fullpost' => ['Control' => 'BlogController', 'Action' => 'fullPost'],
-                '/createpost' => ['Control' => 'BlogController', 'Action' => 'CreatePost'],
-                '/createcomment' => ['Control' => 'CommentController', 'Action' => 'CreateComment']
+                '/createpost' => ['Control' => 'BlogController', 'Action' => 'createPost'],
+                '/createcomment' => ['Control' => 'CommentController', 'Action' => 'createComment'],
+                '/searching' => ['Control' => 'BlogController', 'Action' => 'searching'],
             ];
             if(isset($routing[$route]))
             {
