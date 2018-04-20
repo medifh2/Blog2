@@ -1,16 +1,20 @@
 <?php
 namespace View;
 
+use Conf\LogoInfo;
+
 class View
 {
-    static function pageGenerate ($file)
+    static function pageGenerate ($file, $data_for_view = NULL)
     {
-
+        $logo_info = new LogoInfo;
+        $data_for_view['logo'] = $logo_info -> getData();
         if ($_SESSION['is_login'])
         {
             include 'UtopView.php';
         }
         else include 'TopView.php';
+
         include $file.".php";
     }
 

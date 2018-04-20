@@ -42,39 +42,17 @@ class UserDBModel extends DBModel
         return $res;
     }
 
-    function editUser($user)
+    function getInfoForName($username)
     {
         $pdo = $this -> pdo;
-        $st_check = $pdo -> prepare("SELECT * FROM Blog.users WHERE Login=:login");
-        $st_check->bindParam(':login', $user['login']);
-        $st_check->execute();
-        $res = $st_check -> fetchAll();
-        if ($res[0]['Password'] !== $user['c_pass']) return false;
-        if ($user['username'])
-        {
-            $st_name = $pdo -> prepare("UPDATE Blog.users SET Username=:username WHERE Login=:login");
-            $st_name->bindParam(':login', $user['login']);
-            $st_name->bindParam(':username', $user['username']);
-            $st_name->execute();
-        }
-        if ($user['pass'])
-        {
-            $st_pass = $pdo -> prepare("UPDATE Blog.users SET Password=:pass WHERE Login=:login");
-            $st_pass->bindParam(':login', $user['login']);
-            $st_pass->bindParam(':pass', $user['pass']);
-            $st_pass->execute();
-        }
-        if ($user['about_me'])
-        {
-            $st_about = $pdo -> prepare("UPDATE Blog.users SET About_me=:about_me WHERE Login=:login");
-            $st_about->bindParam(':login', $user['login']);
-            $st_about->bindParam(':about_me', $user['about_me']);
-            $st_about->execute();
-        }
-        return true;
+        $st = $pdo -> prepare ('SELECT Login, Username, About_me, Accesslvl, RegDate, UserConfigs FROM Blog.users WHERE (Username = :username)');
+        $st -> bindParam(':username', $username);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res;
     }
 
-    function getUserInfo($login, $user)
+    function editUser($user)
     {
         $pdo = $this -> pdo;
         $st_check = $pdo -> prepare("SELECT * FROM Blog.users WHERE Login=:login");

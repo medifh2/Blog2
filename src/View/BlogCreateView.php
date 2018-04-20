@@ -15,6 +15,7 @@
     <br>
     <textarea title = 'Your post' name = 'text' cols = "60" rows = "15"></textarea>
     <br>
+    Publish: <input title = "status"  type = "checkbox" name = "status" checked>  <br><br>
     <button class="submit" type="submit">Create</button>
 </form>
 </body>

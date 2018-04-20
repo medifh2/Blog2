@@ -26,6 +26,7 @@
                 '/createpost' => ['Control' => 'BlogController', 'Action' => 'createPost'],
                 '/createcomment' => ['Control' => 'CommentController', 'Action' => 'createComment'],
                 '/searching' => ['Control' => 'BlogController', 'Action' => 'searching'],
+                '/linkauthor' => ['Control' => 'UserController', 'Action' => 'showOtherUserProfile'],
             ];
             if(isset($routing[$route]))
             {
@@ -37,6 +38,7 @@
             else {
                 View::pagegenerate ('Error404View');
             }
+            $_SERVER['REQUEST_URI'] = 'ololololo';
         }
     }
 

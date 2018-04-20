@@ -10,6 +10,13 @@ img
     padding: 5px;
 }
 
+img.logo
+{
+    position: absolute;
+    max-height: 30px;
+    width: auto;
+    padding: 0;
+}
 img.full
 {
     max-width: 98%;
@@ -91,10 +98,8 @@ a:active
 
 h3
 {
-
     word-wrap: break-word;
     display: block;
-
 }
 
 P.menu
@@ -108,25 +113,39 @@ form.content
     margin-right: 30%;
     margin-left: 30%;
     margin-top: 10%;
-
+}
+form.link
+{
+    width:100px;
+    height:100px;
 }
 
 h2 {
     display: block;
     font-size: 1.5em;
-    margin-top: 0em;
-    margin-bottom: 0em;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
     font-weight: bold;
     padding: 5px;
 }
 
+h6 {
+    font-size: 0.6em;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+    padding-left: 5px;
+}
+
 h4 {
     display: block;
     font-size: 1em;
-    margin-top: 0em;
-    margin-bottom: 0em;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
     font-weight: unset;
@@ -142,8 +161,8 @@ h4 {
 h4.full {
     display: block;
     font-size: 1em;
-    margin-top: 0em;
-    margin-bottom: 0em;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
     font-weight: unset;
@@ -157,8 +176,8 @@ h5 {
     padding: 5px;
     display: block;
     font-size: .83em;
-    margin-top: 0em;
-    margin-bottom: 0em;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
     font-weight: lighter;
@@ -168,8 +187,8 @@ h5.comment {
     padding: 5px;
     display: block;
     font-size: .83em;
-    margin-top: 0em;
-    margin-bottom: 0em;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
     font-weight: bold;
@@ -202,14 +221,7 @@ h5.comment {
     padding:3px;
 }
 
- div
-{
-    width:150px;
-    margin-top: 3px;
-    display:inline-block;
-    float:left;
-    padding:3px;
-}
+
 input.date
 {
     height:20px;
@@ -230,11 +242,48 @@ input.date
      padding: 5px;
 }
 
-
-button.put
+button.editlink
 {
-    position: absolute; /* добавили */
+    float: right;
     bottom:2px;
+    overflow: visible;
+    width: auto;
+    margin: 0;
+    padding: 2px;
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+}
+
+button.link
+{
+    position: absolute;
+    bottom:2px;
+    overflow: visible;
+    width: auto;
+
+    margin: 0;
+    padding: 0;
+
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+}
+button.linkauthor
+{
+    bottom:2px;
+    overflow: visible;
+    width: auto;
+
+    margin: 0;
+    padding: 5px;
+
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
 }
 button.submit {
     background-color: #CD5C5C;

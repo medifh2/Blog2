@@ -29,6 +29,11 @@ class UserController extends Controller
     {
         View:: pageGenerate ('UserProfileView');
     }
+    
+    public function showOtherUserProfile()
+    {
+        View:: pageGenerate ('OtherUserProfileView');
+    }
 
     public function logout()
     {

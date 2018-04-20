@@ -35,6 +35,13 @@ class BlogController extends Controller
             move_uploaded_file($_FILES['image']['tmp_name'],$target);
         }
         else $image = "";
+
+        if (isset($_POST["status"]))
+        {
+            $status = "published";
+        }
+        else $status = "unpublished";
+
         if (isset ($_POST["text"]))
         {
             $text = $_POST['text'];
@@ -46,8 +53,10 @@ class BlogController extends Controller
                 'author' => $_SESSION['Userdata']['Login'],
                 'text' => $text,
                 'image' => 'images/'.$image,
-                'datepub' => date("y-m-d H:i:s ")
+                'datepub' => date("y-m-d H:i:s "),
+                'status' => $status,
             ];
+
         if ($connect -> addPost($post))
         {
             $this -> showUserBlog();
@@ -71,14 +80,63 @@ class BlogController extends Controller
     {
         $connect_post = new PostDBModel;
         $connect_user = new UserDBModel;
-        $login = $_POST["Author_login"];
-        $username = $_POST["Author_username"];
-        $date_from = $_POST["From"];
-        $date_to = $_POST["From"];
-        $post = $connect_post -> getForDataPost($login, $username, $date_from, $date_to);
-        $author = $connect_user -> getUserInfo($login, $username);
-        $_SESSION["Found_auhor"] = $author;
-        $_SESSION["Found_post"] = $post;
+
+        if (isset($_POST["Author_login"]) && $_POST["Author_login"])
+        {
+            $_POST["Author_login"] = str_replace(' ','',$_POST["Author_login"]);
+            $login = $_POST["Author_login"];
+        }
+        else $login = false;
+
+        if (isset($_POST["Author_username"]) && $_POST["Author_username"])
+        {
+            $_POST["Author_username"] = str_replace(' ','',$_POST["Author_username"]);
+            $username = $_POST["Author_username"];
+        }
+        else $username = false;
+
+        if (isset($_POST["Title"]) && $_POST["Title"])
+        {
+            $_POST["Title"] = str_replace(' ','',$_POST["Title"]);
+            $title = $_POST["Title"];
+        }
+        else $title = false;
+
+        if (isset($_POST["From"]) && $_POST["From"])
+        {
+            $_POST["From"] = str_replace(' ','',$_POST["From"]);
+            $date_from = $_POST["From"];
+        }
+        else $date_from = "0000:01:01 00-00-00";
+
+        if (isset($_POST["To"]) && $_POST["To"])
+        {
+            $_POST["To"] = str_replace(' ','',$_POST["To"]);
+            $date_to = $_POST["To"];
+        }
+        else $date_to = "9999:01:01 00-00-00";
+
+        if (!$login)
+        {
+            $login_arr = $connect_user->getInfoForName($username);
+        }
+        else {
+            if ($login)
+            {
+                $login_arr = [ '0' => $login];
+            }
+            else $login_arr = false;
+        }
+        if ($login_arr)
+        {
+            $_SESSION["Found_author"] = $login_arr;
+        }
+        if (!$title || !$login_arr || ($date_from !== "0000:01:01 00-00-00" && $date_to !== "9999:01:01 00-00-00"))
+        {
+            $post = $connect_post->getForDataPost($login_arr, $date_from, $date_to, $title);
+            $_SESSION["Found_post"] = $post;
+        }
+        
         View:: pageGenerate ('SearchResultView');
     }
 
@@ -96,8 +154,6 @@ class BlogController extends Controller
         $post = $connect_postDB -> getForIDPost($_POST["PostID"]);
         $_SESSION["ForFullPost"] = $post;
         $_SESSION["ForFullPost"]["PostID"] = $_POST["PostID"];
-        $_SESSION["ForFullPost"]["Image"] = 'images/'.$_SESSION["ForFullPost"]["Image"];
-
         $connect_commDB = new CommDBModel;
         if ($comment = $connect_commDB -> getForPostIDComment($_SESSION["ForFullPost"]["PostID"]))
         {
@@ -110,7 +166,5 @@ class BlogController extends Controller
 
         View:: pageGenerate ('FullPostView');
     }
-
-
 
 }

@@ -10,15 +10,17 @@ class MainPageController extends Controller
     {
 
     }
+
     public function showMainPage()
     {
         $_SESSION['Numposts'] = 10;
         $connect = new PostDBModel;
         $_SESSION['Islast'] = ($connect -> getNumRows() >= $_SESSION['Numposts']);
         $post = $connect -> getNumPosts($_SESSION['Numposts']);
-         $_SESSION['Allposts'] = $post;
+        $_SESSION['Allposts'] = $post;
         View::pageGenerate ('MainpageView');
     }
+
     public function showMore()
     {
         $_SESSION['Numposts'] += 10;
@@ -28,4 +30,5 @@ class MainPageController extends Controller
         $_SESSION['Allposts'] = $post;
         View::pageGenerate ('MainpageView');
     }
+
 }
