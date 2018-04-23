@@ -2,12 +2,12 @@
 
 <html>
 
-<form class="form" method = "post" action = "reguser">
+<form class="form" method = "post" action = "registration">
 
     <h6 class = 'error'>
-        <?php if ($_SESSION['error_message'])
-            echo $_SESSION['error_message']."<br>";
-        $_SESSION['error_message'] = 0;
+        <?php if (isset($data_for_view['error_message']))
+            echo $data_for_view['error_message']."<br>";
+        $data_for_view['error_message'] = 0;
         ?>
     </h6>
 

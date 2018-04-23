@@ -271,6 +271,13 @@ button.link
     color: red;
     cursor: pointer;
 }
+
+a.link
+{
+    position: absolute;
+    bottom:2px;
+}
+
 button.linkauthor
 {
     bottom:2px;

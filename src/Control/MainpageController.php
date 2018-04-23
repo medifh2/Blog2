@@ -13,22 +13,27 @@ class MainPageController extends Controller
 
     public function showMainPage()
     {
-        $_SESSION['Numposts'] = 10;
+        $numposts = 10;
         $connect = new PostDBModel;
-        $_SESSION['Islast'] = ($connect -> getNumRows() >= $_SESSION['Numposts']);
-        $post = $connect -> getNumPosts($_SESSION['Numposts']);
-        $_SESSION['Allposts'] = $post;
-        View::pageGenerate ('MainpageView');
+        $is_last = ($connect -> getNumRows() >= $numposts);
+        $post = $connect -> getNumPosts($numposts);
+        $all_posts = $post;
+        $data_for_view ['all_posts'] = $all_posts;
+        $data_for_view ['message'] = false;
+        $data_for_view['is_last'] = $is_last;
+        View::pageGenerate ('MainpageView', $data_for_view);
     }
 
-    public function showMore()
+    public function showMore($route_data)
     {
-        $_SESSION['Numposts'] += 10;
+        $numposts = $route_data;
         $connect = new PostDBModel;
-        $_SESSION['Islast'] = ($connect -> getNumRows() >= $_SESSION['Numposts']);
-        $post = $connect -> getNumPosts($_SESSION['Numposts']);
-        $_SESSION['Allposts'] = $post;
-        View::pageGenerate ('MainpageView');
+        $is_last = ($connect -> getNumRows() >= $numposts);
+        $post = $connect -> getNumPosts($numposts);
+        $all_posts = $post;
+        $data_for_view['all_posts'] = $all_posts;
+        $data_for_view['is_last'] = $is_last;
+        View::pageGenerate ('MainpageView', $data_for_view);
     }
 
 }

@@ -16,16 +16,31 @@ class BlogController extends Controller
 
     public function showBlogCreatePage()
     {
+        if (!$_SESSION['is_login'])
+            if ($_SESSION['Userdata']['Lvl'] = 'reader')
+            {
+                View::pageGenerate('Error404View');
+                return;
+            }
+
         View::pageGenerate ('BlogCreateView');
     }
 
     public function createPost()
     {
+        if (!$_SESSION['is_login'])
+            if ($_SESSION['Userdata']['Lvl'] = 'reader')
+            {
+                View::pageGenerate('Error404View');
+                return;
+            }
+
         $connect = new PostDBModel;
         if ((!isset($_POST["text"]) && !isset($_FILES["image"])) || (!$_POST["title"]))
         {
-            $_SESSION['error_message'] = 'Wrong Data';
-            View::pageGenerate ('BlogCreateView');
+            $error_message = 'Wrong Data';
+            $data_for_view['error_message'] = $error_message;
+            View::pageGenerate ('BlogCreateView', $data_for_view);
             return;
         }
         if (isset ($_FILES['image']))
@@ -38,11 +53,11 @@ class BlogController extends Controller
 
         if (isset($_POST["status"]))
         {
-            $status = "published";
+            $status = 'published';
         }
-        else $status = "unpublished";
+        else $status = 'unpublished';
 
-        if (isset ($_POST["text"]))
+        if (isset ($_POST['text']))
         {
             $text = $_POST['text'];
         }
@@ -59,21 +74,27 @@ class BlogController extends Controller
 
         if ($connect -> addPost($post))
         {
-            $this -> showUserBlog();
+            header('Location: http://192.168.33.10/userpage');
         }
         else {
-            $_SESSION['error_message'] = 'Unknown error';
-            View::pageGenerate ('BlogCreateView');
+            $error_message = 'Unknown error';
+            $data_for_view ['error_message'] = $error_message;
+            View::pageGenerate ('BlogCreateView', $data_for_view);
         }
     }
 
     public function showUserBlog()
     {
-        $connect = new PostDBModel;
-        $post = $connect -> getForLoginPost($_SESSION['Userdata']['Login']);
+        if (!$_SESSION['is_login'])
+            {
+                View::pageGenerate('Error404View');
+                return;
+            }
 
-        $_SESSION['Userposts'] = $post;
-        View:: pageGenerate ('UserBlogView');
+        $connect = new PostDBModel;
+        $userposts = $connect -> getForLoginPost($_SESSION['Userdata']['Login']);
+        $data_for_view['userposts'] = $userposts;
+        View:: pageGenerate ('UserBlogView',$data_for_view);
     }
 
     public function searching()
@@ -127,44 +148,54 @@ class BlogController extends Controller
             }
             else $login_arr = false;
         }
-        if ($login_arr)
+        if ($found_author = $login_arr);
+        else 
         {
-            $_SESSION["Found_author"] = $login_arr;
+            $found_author = false;
         }
         if (!$title || !$login_arr || ($date_from !== "0000:01:01 00-00-00" && $date_to !== "9999:01:01 00-00-00"))
         {
-            $post = $connect_post->getForDataPost($login_arr, $date_from, $date_to, $title);
-            $_SESSION["Found_post"] = $post;
+            if ($found_post = $connect_post->getForDataPost($login_arr, $date_from, $date_to, $title)); 
+            else
+            {
+            $found_post = false;
+            }
         }
-        
-        View:: pageGenerate ('SearchResultView');
+        else
+        {
+            $found_post = false;
+        }
+        $data_for_view['found_post'] = $found_post;
+        $data_for_view['found_author'] = $found_author;
+        View:: pageGenerate ('SearchResultView', $data_for_view);
     }
 
-    public function fullPost()
+    public function fullPost($route_data)
     {
 
-        if (!isset($_POST["PostID"]))
+        if (!$route_data)
         {
             View:: pageGenerate ('Error404View');
             return;
         }
-
+        $post_ID =  $route_data;
         $connect_postDB = new PostDBModel;
 
-        $post = $connect_postDB -> getForIDPost($_POST["PostID"]);
-        $_SESSION["ForFullPost"] = $post;
-        $_SESSION["ForFullPost"]["PostID"] = $_POST["PostID"];
+        $post = $connect_postDB -> getForIDPost($post_ID);
+
         $connect_commDB = new CommDBModel;
-        if ($comment = $connect_commDB -> getForPostIDComment($_SESSION["ForFullPost"]["PostID"]))
-        {
-            $_SESSION["Comments"] = $comment;
-        }
+        if ($comments = $connect_commDB -> getForPostIDComment($post_ID));
         else
         {
-            $_SESSION["Comments"] = false;
+            $comments = false;
         }
-
-        View:: pageGenerate ('FullPostView');
+        $data_for_view =
+            [
+                'post' => $post,
+                'post_ID' => $post_ID,
+                'comments' => $comments
+            ];
+        View:: pageGenerate ('FullPostView', $data_for_view);
     }
 
 }

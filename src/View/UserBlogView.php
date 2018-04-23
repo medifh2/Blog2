@@ -11,10 +11,10 @@
     <h1>Posts:</h1>
 
     <?php
-        foreach ($_SESSION['Userposts'] as $post)
+        foreach ($data_for_view['userposts'] as $post)
         {?>
 
-            <form class="put" method = "post" action = "fullpost">
+            <form class="put" >
                 <h2> <?php echo $post['Title'] ?> </h2>
                 <h5> <?php echo $post['Author'].",  ".$post['DatePub'] ?> </h5>
                 <h6> <?php echo $post['Status'] ?> </h6>
@@ -23,11 +23,10 @@
                 if ($post['Image'] !== 'images/') echo "<img src = '{$post['Image']}'>"
                 ?>
                 <br>
-                <input type = "hidden" name = "PostID" value = <?php echo $post['ID'] ?> >
-                <button class = "link" type="submit">Full post</button>
+                <a  class = "link" href = "fullpost-<?php echo $post['ID'] ?>" type = "submit"> Full </a>
             </form>
         <?php   } ?>
-
+    
 </div>
 </body>
 </html>

@@ -7,14 +7,17 @@
         function __construct()
         {
             $route = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+            print_r ($route);
+            $arr_route = explode ('-' , $route);
+            $route = $arr_route[0];
+            if (isset($arr_route[1])) $route_data = $arr_route[1];
+            else $route_data = false;
             $routing = [
                 '/' => ['Control' => 'MainpageController', 'Action' => 'showMainPage'],
-                '/login' => ['Control' => 'UserController', 'Action' => 'showLoginPage'],
-                '/registration' => ['Control' => 'UserController', 'Action' => 'showRegPage'],
+                '/login' => ['Control' => 'UserController', 'Action' => 'login'],
+                '/registration' => ['Control' => 'UserController', 'Action' => 'registration'],
                 '/userpage' => ['Control' => 'BlogController', 'Action' => 'showUserBlog'],
                 '/profile' => ['Control' => 'UserController', 'Action' => 'showUserProfile'],
-                '/loguser' => ['Control' => 'UserController', 'Action' => 'login'],
-                '/reguser' => ['Control' => 'UserController', 'Action' => 'registration'],
                 '/edituser' => ['Control' => 'UserController', 'Action' => 'editUserData'],
                 '/logout' => ['Control' => 'UserController', 'Action' => 'logout'],
                 '/changeabout' => ['Control' => 'UserController', 'Action' => 'changeAbout'],
@@ -33,7 +36,7 @@
                 $controller = '\\Control\\'.$routing[$route]['Control'];
                 $controller_obj = new $controller();
                 $act = $routing[$route]['Action'];
-                $controller_obj -> $act();
+                $controller_obj -> $act($route_data);
             }
             else {
                 View::pagegenerate ('Error404View');

@@ -3,9 +3,9 @@
 <body>
 <form enctype="multipart/form-data" class = "content" method = "post" action = "createpost">
     <h6 class = 'error'>
-    <?php if ($_SESSION['error_message'])
-        echo $_SESSION['error_message']."<br>";
-    $_SESSION['error_message'] = 0;
+    <?php if (isset($data_for_view['error_message']))
+        echo $data_for_view['error_message']."<br>";
+    $data_for_view['error_message'] = 0;
     ?>
     </h6>
     <input type = "text" name = "title" placeholder="Title" required/>

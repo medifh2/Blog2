@@ -10,23 +10,21 @@ use Model\AdminModel;
 class UserController extends Controller
 {
 
-    public function showLoginPage()
-    {
-        View:: pageGenerate ('LogView');
-    }
-
     public function showSettings()
     {
+        if (!$_SESSION['is_login']) {
+            View::pageGenerate('Error404View');
+            return;
+        }
         View:: pageGenerate ('UserProfileSettingsView');
-    }
-
-    public function showRegPage()
-    {
-        View:: pageGenerate ('RegView');
     }
 
     public function showUserProfile()
     {
+        if (!$_SESSION['is_login']) {
+            View::pageGenerate('Error404View');
+            return;
+        }
         View:: pageGenerate ('UserProfileView');
     }
     
@@ -39,12 +37,21 @@ class UserController extends Controller
     {
         $_SESSION['is_login'] = false;
         unset($_SESSION['Userdata']);
-        unset($_SESSION['Userposts']);
-        View::pageGenerate ('MainpageView');
+        header('Location: http://192.168.33.10/');
     }
 
     public function login()
     {
+        if (!isset($_POST['pass']))
+        {
+            View:: pageGenerate ('LogView');
+            return;
+        }
+        if ($_SESSION['is_login'])
+        {
+            View::pageGenerate('Error404View');
+            return;
+        }
         $connect = new UserDBModel;
         $login = $_POST["login"];
         $pass = ($_POST["pass"]);
@@ -57,20 +64,30 @@ class UserController extends Controller
             }
             $_SESSION['is_login'] = 1;
             $_SESSION['Userdata'] = $user -> allData();
-            $_SESSION['message'] = "Hello, ".$_SESSION['Userdata']['Username'];
-            View::pageGenerate ('MainpageView');
+            header('Location: http://192.168.33.10/');
         }
         else
             {
-                $_SESSION['error_message'] = 'Wrong password or login';
-                View::pageGenerate ('LogView');
+                $error_message = 'Wrong password or login';
+                $data_for_view['error_message'] = $error_message;
+                View:: pageGenerate ('LogView', $data_for_view);
             }
-
 
     }
 
     public function registration()
     {
+        if (!isset($_POST['pass']))
+        {
+            View:: pageGenerate ('RegView');
+            return;
+        }
+        if ($_SESSION['is_login'])
+        {
+            View::pageGenerate('Error404View');
+            return;
+        }
+
         $connect = new UserDBModel;
 
         $_POST["pass"] = str_replace(' ','',$_POST["pass"]);
@@ -81,8 +98,8 @@ class UserController extends Controller
         $r_pass = $_POST["r_pass"];
         if (!$pass || !$_POST["login"] || !$_POST["username"] || ($pass !== $r_pass))
         {
-            $_SESSION['error_message'] = 'Incorrect data!' ;
-            View::pageGenerate ('RegView');
+            $date_for_view['error_message'] = 'Incorrect data!' ;
+            View:: pageGenerate ('RegView', $date_for_view);
             return;
         }
         $user =
@@ -100,17 +117,22 @@ class UserController extends Controller
             $user = new ReaderModel($user['login'], $user['pass'], $user['username'], $user['about_me']);
             $_SESSION['is_login'] = 1;
             $_SESSION['Userdata'] = $user -> allData();
-            View::pageGenerate ('MainpageView');
+            header('Location: http://192.168.33.10/');
         }
         else {
-            $_SESSION['error_message'] = 'A User with such data is already registered!' ;
-            View::pageGenerate ('RegView');
+            $date_for_view['error_message'] = 'A User with such data is already registered!' ;
+            View:: pageGenerate ('RegView', $date_for_view);
             return;
         }
     }
 
     public function editUserData()
     {
+        if (!$_SESSION['is_login'])
+        {
+            View::pageGenerate('Error404View');
+            return;
+        }
         $connect = new UserDBModel;
         $_POST["n_pass"] = str_replace(' ','',$_POST["n_pass"]);
         $_POST["c_pass"] = str_replace(' ','',$_POST["c_pass"]);
@@ -122,7 +144,7 @@ class UserController extends Controller
         $user =
             [
                 'login' => $_SESSION['Userdata']['Login'],
-                'pass' => $pass,
+                'pass' => $_POST["n_pass"],
                 'c_pass' => $_POST["c_pass"],
                 'username' => $_POST["n_username"],
                 'about_me' => $_POST["n_about"],
@@ -131,13 +153,13 @@ class UserController extends Controller
         {
             if ($_POST["n_username"]) $_SESSION['Userdata']["Username"] = $_POST["n_username"];
             if ($_POST["n_about"]) $_SESSION['Userdata']["About_me"] = $_POST["n_about"];
-            $_SESSION['message'] = "Updates saved";
-            View::pageGenerate('UserProfileView');
+            header('Location: http://192.168.33.10/profile');
         }
         else
             {
-                $_SESSION['error_message'] = "Wrong password";
-                View::pageGenerate('UserProfileSettingsView');
+                $error_message = "Wrong password";
+                $data_for_view['error_message'] = $error_message;
+                View:: pageGenerate ('LogView', $data_for_view);
             }
     }
 }

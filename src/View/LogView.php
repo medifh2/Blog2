@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
 <html>
-<form class="form" method = "post" action = "loguser">
+<form class="form" method = "post" action = "login">
     <h6 class = 'error'>
-    <?php if ($_SESSION['error_message'])
-        echo $_SESSION['error_message']."<br>";
-    $_SESSION['error_message'] = 0;
+    <?php if (isset($data_for_view['$error_message']))
+        echo $data_for_view['$error_message']."<br>";
+    $data_for_view['$error_message'] = 0;
     ?>
     </h6>
     <ul>
@@ -19,7 +19,7 @@
             <input type = "password" name = "pass" placeholder="Password"  required/>
         </li>
         <li>
-            <button class="submit" type="submit">Enter</button>
+            <button class = "submit" type = "submit">Enter</button>
         </li>
     </ul>
 </form>

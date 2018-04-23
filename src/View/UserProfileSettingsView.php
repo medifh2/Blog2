@@ -5,9 +5,9 @@
 
 <form class="form" action = "/edituser" method = "post" name = "edit_form">
     <h6 class = 'error'>
-        <?php if ($_SESSION['error_message'])
-            echo '<li>'.$_SESSION['error_message']."</li><br>";
-        $_SESSION['error_message'] = 0;
+        <?php if (isset($data_for_view['error_message']))
+            echo '<li>'.$data_for_view['error_message']."</li><br>";
+        $data_for_view['error_message'] = 0;
         ?>
     </h6>
     <ul>

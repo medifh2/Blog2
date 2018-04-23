@@ -6,9 +6,9 @@
 <div class = "content">
 
     <h6 class = 'success'>
-        <?php if ($_SESSION['message'])
-            echo $_SESSION['message']."<br>";
-        $_SESSION['message'] = 0;
+        <?php if (isset($data_for_view['message']))
+            echo $data_for_view['message']."<br>";
+        $data_for_view['message'] = 0;
         ?>
     </h6>
 
@@ -41,16 +41,16 @@
     </form>
     <h2> Found users: </h2>
     
-    <?php foreach ($_SESSION['Found_author'] as $author) { ?>
+    <?php foreach ($data_for_view['found_author'] as $author) { ?>
         <form class="linkauthor" method = "post" action = "linkauthor">
-            <?php $_SESSION["OtherUserdata"] = $author; ?>
+            <?php $other_user_data = $author; ?>
             <button class = 'linkauthor' type = 'submit'> <?php echo $author['Login'] ?></button>
         </form>
     <?php } ?>
     
     <h2> Found posts: </h2>
-    <?php if ($_SESSION['Found_post'])
-        foreach ($_SESSION['Found_post'] as $post_arr)
+    <?php if ($data_for_view['found_post'])
+        foreach ($data_for_view['found_post'] as $post_arr)
             foreach ($post_arr as $post)
             {?>
                 <form class="put" method = "post" action = "fullpost">

@@ -11,7 +11,7 @@ class CommDBModel extends DBModel
         $st_insert = $pdo -> prepare("INSERT INTO Blog.comments
         (PostID, Author, Text, DatePub)
         VALUES (:postID, :author, :text, :datepub)");
-        $st_insert -> bindParam(':postID', $comment['postID']);
+        $st_insert -> bindParam(':postID', $comment['post_ID']);
         $st_insert -> bindParam(':author', $comment['author']);
         $st_insert -> bindParam(':text', $comment['text']);
         $st_insert -> bindParam(':datepub', $comment['datepub']);

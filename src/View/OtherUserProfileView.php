@@ -4,14 +4,14 @@
 <body> 
 <form class = "content">
     <h6 class = "success">
-        <?php if ($_SESSION['message']) 
-            echo $_SESSION['message']."<br>";
-        $_SESSION['message'] = 0; 
+        <?php if (isset($data_for_view['message'])) 
+            echo $data_for_view['message']."<br>";
+        $data_for_view['message'] = 0; 
         ?>
     </h6>
-    <h1><?php echo ($_SESSION['OtherUserdata']['Username']) ?></h1>
-    <h3><?php echo ($_SESSION['OtherUserdata']['Accesslvl']) ?><br>
-        About <?php echo ($_SESSION['OtherUserdata']['Username']) ?>: <?php echo ' '.($_SESSION['OtherUserdata']['About_me']) ?><br>
+    <h1><?php echo ($data_for_view['other_user_data']['Username']) ?></h1>
+    <h3><?php echo ($data_for_view['other_user_data']['Accesslvl']) ?><br>
+        About <?php echo ($data_for_view['other_user_data']['Username']) ?>: <?php echo ' '.($data_for_view['other_user_data']['About_me']) ?><br>
     </h3>
 </form>
 </body>

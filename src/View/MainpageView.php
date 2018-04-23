@@ -5,9 +5,9 @@
 <body>
 <div class = "content">
     <h6 class = 'success'>
-        <?php if ($_SESSION['message']) 
-            echo $_SESSION['message']."<br>";
-        $_SESSION['message'] = 0; 
+        <?php if (isset($data_for_view['message']))
+            echo $data_for_view['message']."<br>";
+        $data_for_view['message'] = 0;
         ?>
     </h6>
     <h1>Main page</h1>
@@ -15,9 +15,9 @@
         <button class = "submit" type="submit">Search</button>
     </form>
     <?php 
-    foreach ($_SESSION['Allposts'] as $post) 
+    foreach ($data_for_view['all_posts'] as $post)
     { if ($post['Status'] === 'published') { ?>
-        <form class="put" method = "post" action = "fullpost">
+        <form class="put" >
             <h2> <?php echo $post['Title'] ?> </h2>
             
             <h5> <?php echo $post['Author'].",  ".$post['DatePub'] ?> </h5>
@@ -27,10 +27,10 @@
             ?>
             <br>
             <input type = "hidden" name = "PostID" value = <?php echo $post['ID'] ?> >
-            <button class = "link" type = "submit">Full post</button>
+            <a  class = "link" href = "fullpost-<?php echo $post['ID'] ?>" type = "submit"> Full </a>
         </form>
     <?php } } ?>
-    <?php if ($_SESSION['Islast']) echo "<a  href = 'more'> More </a>" ?>
+    <?php if ($data_for_view['is_last']) echo "<a  href = 'more'> More </a>" ?>
 </div>
 </body>
 
