@@ -10,9 +10,15 @@ img
     padding: 5px;
 }
 
+nav
+{
+    text-align: right;
+}
+
 img.logo
 {
-    position: absolute;
+    float: left;
+    text-align: left;
     max-height: 30px;
     width: auto;
     padding: 0;
@@ -45,11 +51,13 @@ div.comment
     margin-left: 5%;
 }
 
-form.put
+div.put
 {
     background: whitesmoke;
     border: 1px solid powderblue;
-    width: 100%;
+    width:600px;
+    margin-right: 30%;
+    margin-left: 30%;
     height: 370px;
     margin-top: 3px;
     position:relative;
@@ -107,6 +115,11 @@ P.menu
     text-align: right
 }
 
+form.search
+{
+    float: right;
+}
+
 form.content
 {
     width:600px;
@@ -114,6 +127,7 @@ form.content
     margin-left: 30%;
     margin-top: 10%;
 }
+
 form.link
 {
     width:100px;
@@ -203,9 +217,19 @@ h5.comment {
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
- ul {
+ul
+{
     list-style-type:none;
 }
+
+table.users
+{
+    background: #FFE4C4;
+    border: 1px solid #F4A460;
+    margin-right: 5%;
+    margin-left: 5%;
+}
+
  li{
     padding:12px;
     border-bottom:1px solid #eee;

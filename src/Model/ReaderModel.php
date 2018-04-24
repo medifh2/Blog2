@@ -19,10 +19,10 @@ protected $login, $pass, $username, $about;
     function allData()
     {
         $res =[
-            'Login' => $this -> login,
-            'Username' => $this -> username,
-            'About_me' => $this -> about,
-            'Lvl' => $this -> lvl,
+            'login' => $this -> login,
+            'username' => $this -> username,
+            'about_me' => $this -> about,
+            'lvl' => $this -> lvl,
         ];
         return $res;
     }

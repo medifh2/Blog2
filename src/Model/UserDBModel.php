@@ -6,7 +6,6 @@ class UserDBModel extends DBModel
 
     function addUser($user)
     {
-        if (!($this -> pdo)) return false;
         $pdo = $this -> pdo;
         $st_check = $pdo -> prepare ('SELECT Login FROM Blog.users WHERE ((Login = :login) OR (Username = :username))');
         $st_check -> bindParam(':login', $user['login']);
@@ -30,6 +29,17 @@ class UserDBModel extends DBModel
         }
     }
 
+    function getForQuery($query)
+    {
+        $pdo = $this -> pdo;
+        $statement = "SELECT * FROM Blog.users  WHERE (Username LIKE '%".$query."%') OR (Login LIKE '%".$query."%')";
+        $st = $pdo -> prepare ($statement);
+        $st -> bindParam(':query', $query);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res;
+    }
+
     function loginUser($login, $pass)
     {
         $pdo = $this -> pdo;
@@ -41,7 +51,18 @@ class UserDBModel extends DBModel
         if ($res) $res = $res[0];
         return $res;
     }
-
+    
+    function getFromToUsers($from, $to)
+    {
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare ('SELECT * FROM Blog.users ORDER BY Login LIMIT :from, :to ');
+        $st -> bindParam(':from', $from);
+        $st -> bindParam(':to', $to);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res;
+    }
+    
     function getInfoForName($username)
     {
         $pdo = $this -> pdo;
@@ -50,6 +71,16 @@ class UserDBModel extends DBModel
         $st -> execute();
         $res = $st -> fetchAll();
         return $res;
+    }
+
+    function getForID($id)
+    {
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare ('SELECT Login, Username, About_me, Accesslvl, RegDate, UserConfigs FROM Blog.users WHERE (ID = :id)');
+        $st -> bindParam(':id', $id);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res[0];
     }
 
     function editUser($user)

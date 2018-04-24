@@ -6,7 +6,6 @@ class CommDBModel extends DBModel
 
     function addComment($comment)
     {
-        if (!($this -> pdo)) return false;
         $pdo = $this -> pdo;
         $st_insert = $pdo -> prepare("INSERT INTO Blog.comments
         (PostID, Author, Text, DatePub)

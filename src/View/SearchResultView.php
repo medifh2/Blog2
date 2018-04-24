@@ -12,7 +12,7 @@
         ?>
     </h6>
 
-    <form method = "post" action = "searching" >
+   <!-- <form method = "post" action = "searching" >
         <ul>
             <li>
                 <label for = "Author">Author's Login:</label>
@@ -39,21 +39,23 @@
             </li>
         </ul>
     </form>
+    -->
+    <?php if ($data_for_view['users']) {?>
     <h2> Found users: </h2>
-    
-    <?php foreach ($data_for_view['found_author'] as $author) { ?>
-        <form class="linkauthor" method = "post" action = "linkauthor">
-            <?php $other_user_data = $author; ?>
-            <button class = 'linkauthor' type = 'submit'> <?php echo $author['Login'] ?></button>
-        </form>
-    <?php } ?>
-    
+    <?php
+    if ($data_for_view['found_author'])
+    foreach ($data_for_view['found_author'] as $author) { ?>
+            <a  href = "user/<?php echo $author['ID']?> " > <?php echo $author['Username'].' ('.$author['Login'].')' ?> </a>
+    <?php } else echo "<div> Users not found </div>"; }?>
+
+    <?php if ($data_for_view['posts']) { ?>
     <h2> Found posts: </h2>
-    <?php if ($data_for_view['found_post'])
-        foreach ($data_for_view['found_post'] as $post_arr)
-            foreach ($post_arr as $post)
+</div>
+    <?php
+    if ($data_for_view['found_post'])
+        foreach ($data_for_view['found_post'] as $post)
             {?>
-                <form class="put" method = "post" action = "fullpost">
+                <div class="put" >
                     <h2> <?php echo $post['Title'] ?> </h2>
                     <h5> <?php echo $post['Author'].",  ".$post['DatePub'] ?> </h5>
                     <h4> <?php echo $post['Text'] ?> </h4>
@@ -63,10 +65,10 @@
                     <br>
                     <input type = "hidden" name = "PostID" value = <?php echo $post['ID'] ?> >
                     <button class = "put" type="submit">Full post</button>
-                </form>
-            <?php } ?>
+                </div>
+            <?php } else echo "<div>  Posts not found </div>"; }?>
 
-</div>
+
 </body>
 
 </html>

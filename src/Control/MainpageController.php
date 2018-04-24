@@ -11,20 +11,19 @@ class MainPageController extends Controller
 
     }
 
-    public function showMainPage()
+    public function showMainPage($route_date)
     {
-        $numposts = 10;
+        $from = 0;
+        $to = 10;
         $connect = new PostDBModel;
-        $is_last = ($connect -> getNumRows() >= $numposts);
-        $post = $connect -> getNumPosts($numposts);
-        $all_posts = $post;
+        $num_all_posts = ($connect -> getNumRows());
+        $all_posts  = $connect -> getFromToPosts($from, $to);
         $data_for_view ['all_posts'] = $all_posts;
-        $data_for_view ['message'] = false;
-        $data_for_view['is_last'] = $is_last;
+        $data_for_view['num_all_posts'] = $num_all_posts;
         View::pageGenerate ('MainpageView', $data_for_view);
     }
 
-    public function showMore($route_data)
+    public function showNPage($route_data)
     {
         $numposts = $route_data;
         $connect = new PostDBModel;

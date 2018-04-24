@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<form enctype="multipart/form-data" class = "content" method = "post" action = "createpost">
+<form class = "content" method = "post" action = "createpost">
     <h6 class = 'error'>
     <?php if (isset($data_for_view['error_message']))
         echo $data_for_view['error_message']."<br>";

@@ -11,6 +11,7 @@ class CommentController extends Controller
 
     public function createComment($post_ID)
     {
+        echo '-------------------'.$post_ID;
         $connect_post = new PostDBModel;
         $connect_comm = new CommDBModel;
         if (!isset($_POST["text"]))
@@ -32,14 +33,9 @@ class CommentController extends Controller
             ];
         print_r($comment);
         $connect_comm -> addComment($comment);
-        
-        $comments = $connect_comm -> getForPostIDComment($post["post_ID"]);
-        $data_for_view =
-        [
-            'error_message' => $error_message,
-            'comments' => $comments,
-        ];
-        View::pageGenerate ('FullPostView', $data_for_view);
+        $route = 'Location: http://192.168.33.10/post/'.$post_ID;
+
+        header($route);
     }
 
 }

@@ -6,7 +6,6 @@ class PostDBModel extends DBModel
 
     function addPost($post)
     {
-        if (!($this -> pdo)) return false;
         $pdo = $this -> pdo;
         $st_insert = $pdo -> prepare("INSERT INTO Blog.posts 
         (Text, Image, Author, Title, DatePub, Status) 
@@ -26,6 +25,17 @@ class PostDBModel extends DBModel
         $pdo = $this -> pdo;
         $st = $pdo -> prepare ('SELECT * FROM Blog.posts WHERE (Author = :login) ORDER BY DatePub Desc');
         $st -> bindParam(':login', $login);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res;
+    }
+
+    function getForQuery($query)
+    {
+        $pdo = $this -> pdo;
+        $statement = "SELECT * FROM Blog.posts WHERE Title LIKE '%".$query."%' ORDER BY DatePub Desc";
+        $st = $pdo -> prepare ($statement);
+        $st -> bindParam(':query', $query);
         $st -> execute();
         $res = $st -> fetchAll();
         return $res;
@@ -72,17 +82,17 @@ class PostDBModel extends DBModel
         return $res[0];
     }
 
-    function getNumPosts($num)
+    function getFromToPosts($from, $to)
     {
         $pdo = $this -> pdo;
-
-        $st = $pdo -> prepare ('SELECT * FROM Blog.posts ORDER BY DatePub Desc LIMIT :num');
-        $st -> bindParam(':num', $num);
-
+        $st = $pdo -> prepare ('SELECT * FROM Blog.posts ORDER BY DatePub DESC LIMIT :from, :to ');
+        $st -> bindParam(':from', $from);
+        $st -> bindParam(':to', $to);
         $st -> execute();
         $res = $st -> fetchAll();
         return $res;
     }
+    
     function getNumRows()
     {
         $pdo = $this -> pdo;

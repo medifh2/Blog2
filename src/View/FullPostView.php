@@ -34,7 +34,7 @@
 </div>
 <div>
     <h3> Add new comment:</h3>
-    <form action = "createcomment-<?php echo $data_for_view['post']['ID'] ?>" method = "post" name = "comment">
+    <form action = "/createcomment/<?php echo $data_for_view['post']['ID'] ?>" method = "post" name = "comment">
         <textarea title = "Your comment" name = "text" ></textarea><br>
         <button class = "submit" type = "submit">Add comment</button>
     </form>

@@ -17,7 +17,7 @@ class BlogController extends Controller
     public function showBlogCreatePage()
     {
         if (!$_SESSION['is_login'])
-            if ($_SESSION['Userdata']['Lvl'] = 'reader')
+            if ($_SESSION['userdata']['lvl'] = 'reader')
             {
                 View::pageGenerate('Error404View');
                 return;
@@ -29,7 +29,7 @@ class BlogController extends Controller
     public function createPost()
     {
         if (!$_SESSION['is_login'])
-            if ($_SESSION['Userdata']['Lvl'] = 'reader')
+            if ($_SESSION['userdata']['lvl'] = 'reader')
             {
                 View::pageGenerate('Error404View');
                 return;
@@ -65,7 +65,7 @@ class BlogController extends Controller
         $post =
             [
                 'title' => $_POST["title"],
-                'author' => $_SESSION['Userdata']['Login'],
+                'author' => $_SESSION['userdata']['login'],
                 'text' => $text,
                 'image' => 'images/'.$image,
                 'datepub' => date("y-m-d H:i:s "),
@@ -79,7 +79,7 @@ class BlogController extends Controller
         else {
             $error_message = 'Unknown error';
             $data_for_view ['error_message'] = $error_message;
-            View::pageGenerate ('BlogCreateView', $data_for_view);
+            View:: pageGenerate ('BlogCreateView', $data_for_view);
         }
     }
 
@@ -92,7 +92,7 @@ class BlogController extends Controller
             }
 
         $connect = new PostDBModel;
-        $userposts = $connect -> getForLoginPost($_SESSION['Userdata']['Login']);
+        $userposts = $connect -> getForLoginPost($_SESSION['userdata']['login']);
         $data_for_view['userposts'] = $userposts;
         View:: pageGenerate ('UserBlogView',$data_for_view);
     }
@@ -101,8 +101,25 @@ class BlogController extends Controller
     {
         $connect_post = new PostDBModel;
         $connect_user = new UserDBModel;
-
-        if (isset($_POST["Author_login"]) && $_POST["Author_login"])
+        $_POST['query'] = str_replace(' ','',$_POST['query']);
+        $query = $_POST['query'];
+        if (isset($_POST['users']))$data_for_view['users'] = true;
+        else $data_for_view['users'] = false;
+        if (isset($_POST['posts']))$data_for_view['posts'] = true;
+        else $data_for_view['posts'] = false;
+        if ($query)
+        {
+            $posts = $connect_post->getForQuery($query);
+            $authors = $connect_user->getForQuery($query);
+            $data_for_view['found_post'] = $posts;
+            $data_for_view['found_author'] = $authors;
+        }
+        else {
+            $data_for_view['found_post'] = false;
+            $data_for_view['found_author'] = false;
+        }
+        View:: pageGenerate ('SearchResultView', $data_for_view);
+       /* if (isset($_POST["Author_login"]) && $_POST["Author_login"])
         {
             $_POST["Author_login"] = str_replace(' ','',$_POST["Author_login"]);
             $login = $_POST["Author_login"];
@@ -167,7 +184,7 @@ class BlogController extends Controller
         }
         $data_for_view['found_post'] = $found_post;
         $data_for_view['found_author'] = $found_author;
-        View:: pageGenerate ('SearchResultView', $data_for_view);
+        View:: pageGenerate ('SearchResultView', $data_for_view);*/
     }
 
     public function fullPost($route_data)

@@ -28,15 +28,18 @@ class UserController extends Controller
         View:: pageGenerate ('UserProfileView');
     }
     
-    public function showOtherUserProfile()
+    public function showOtherUserProfile($user_id)
     {
-        View:: pageGenerate ('OtherUserProfileView');
+        $connect = new UserDBModel;
+        $user = $connect -> getForID($user_id);
+        $data_for_view['other_user_data'] = $user;
+        View:: pageGenerate ('OtherUserProfileView',$data_for_view);
     }
 
     public function logout()
     {
         $_SESSION['is_login'] = false;
-        unset($_SESSION['Userdata']);
+        unset($_SESSION['userdata']);
         header('Location: http://192.168.33.10/');
     }
 
@@ -54,16 +57,16 @@ class UserController extends Controller
         }
         $connect = new UserDBModel;
         $login = $_POST["login"];
-        $pass = ($_POST["pass"]);
+        $pass = md5($_POST["pass"]);
         if ($userdata = $connect -> loginUser($login, $pass))
         {
             switch ($userdata['Accesslvl']) {
-                case 'reader' : $user = new ReaderModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me']); break;
-                case 'writer' : $user = new WriterModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me']); break;
-                case 'admin' : $user = new AdminModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me']); break;
+                case 'reader' : $user = new ReaderModel($userdata['login'], $userdata['password'], $userdata['username'], $userdata['about_me']); break;
+                case 'writer' : $user = new WriterModel($userdata['login'], $userdata['password'], $userdata['username'], $userdata['about_me']); break;
+                case 'admin' : $user = new AdminModel($userdata['login'], $userdata['password'], $userdata['username'], $userdata['about_me']); break;
             }
             $_SESSION['is_login'] = 1;
-            $_SESSION['Userdata'] = $user -> allData();
+            $_SESSION['userdata'] = $user -> allData();
             header('Location: http://192.168.33.10/');
         }
         else
@@ -102,6 +105,7 @@ class UserController extends Controller
             View:: pageGenerate ('RegView', $date_for_view);
             return;
         }
+        $pass = md5($pass);
         $user =
             [
                 'login' => $_POST["login"],
@@ -116,7 +120,7 @@ class UserController extends Controller
         {
             $user = new ReaderModel($user['login'], $user['pass'], $user['username'], $user['about_me']);
             $_SESSION['is_login'] = 1;
-            $_SESSION['Userdata'] = $user -> allData();
+            $_SESSION['userdata'] = $user -> allData();
             header('Location: http://192.168.33.10/');
         }
         else {
@@ -137,29 +141,32 @@ class UserController extends Controller
         $_POST["n_pass"] = str_replace(' ','',$_POST["n_pass"]);
         $_POST["c_pass"] = str_replace(' ','',$_POST["c_pass"]);
         $_POST["n_username"] = str_replace(' ','',$_POST["n_username"]);
-        if (isset($_POST["n_pass"]))
+        if ($_POST["n_pass"])
         {
-            $pass = $_POST["n_pass"];
+            $n_pass = md5($_POST["n_pass"]);
         }
+        else $n_pass = false;
+        $c_pass = md5($_POST["c_pass"]);
+        echo $c_pass;
         $user =
             [
-                'login' => $_SESSION['Userdata']['Login'],
-                'pass' => $_POST["n_pass"],
-                'c_pass' => $_POST["c_pass"],
+                'login' => $_SESSION['userdata']['login'],
+                'pass' => $n_pass,
+                'c_pass' => $c_pass,
                 'username' => $_POST["n_username"],
                 'about_me' => $_POST["n_about"],
             ];
         if ($connect -> editUser($user))
         {
-            if ($_POST["n_username"]) $_SESSION['Userdata']["Username"] = $_POST["n_username"];
-            if ($_POST["n_about"]) $_SESSION['Userdata']["About_me"] = $_POST["n_about"];
+            if ($_POST["n_username"]) $_SESSION['userdata']["username"] = $_POST["n_username"];
+            if ($_POST["n_about"]) $_SESSION['userdata']["about_me"] = $_POST["n_about"];
             header('Location: http://192.168.33.10/profile');
         }
         else
             {
                 $error_message = "Wrong password";
                 $data_for_view['error_message'] = $error_message;
-                View:: pageGenerate ('LogView', $data_for_view);
+                View:: pageGenerate ('UserProfileSettingsView', $data_for_view);
             }
     }
 }
