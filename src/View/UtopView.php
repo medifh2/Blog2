@@ -11,11 +11,13 @@
     <P class = "menu">
       <?php if ($_SESSION['userdata']['lvl'] == 'admin') {?> <a  href = "/usertable"> [users] </a> | <?php  } ?> <a  href = "/"> Blog feed </a> | <a href = "/userpage"> My blog </a>| <a href = "/profile"> My profile </a>
         | <a href = "/logout"> Logout </a> <br>
-    <form class = "search" method = "post" action = "searching">
-        <input type = "text" name = "query" /> <button class = "submit" type="submit">Search</button>
+    <form class = "search" method = "post" action = "/searching">
+        <input type = "text" name = "query" />
+        <button class = "submit" type="submit">Search</button>
+        <br><br>
+        Posts:<input title = "status"  type = "checkbox" name = "posts" checked>
+        Users:<input title = "status"  type = "checkbox" name = "users" >
     </form>
-    <br><br>
-    Posts:<input title = "status"  type = "checkbox" name = "posts" checked>
-    Users:<input title = "status"  type = "checkbox" name = "users" >
+
 </nav>
 

@@ -10,8 +10,8 @@ spl_autoload_register (function ($class)
                 case 'View': {$pre = 'src/'; break;}
                 case 'Control': {$pre = 'src/'; break;}
                 case 'Model': {$pre = 'src/'; break;}
-                case 'Tec': {$pre = ''; break;}
-                case 'Conf': {$pre = ''; break;}
+                case 'Tec': {$pre = 'src/'; break;}
+                case 'Conf': {$pre = 'src/'; break;}
                 default: $pre = '';
             }
             $path = __DIR__ . '/' .$pre. str_replace('\\', '/', $class) . '.php';

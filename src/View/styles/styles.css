@@ -9,7 +9,12 @@ img
     width: auto;
     padding: 5px;
 }
-
+img.example
+{
+    max-width:100px;
+    max-height:100px;
+    position:relative;
+}
 nav
 {
     text-align: right;
@@ -118,6 +123,14 @@ P.menu
 form.search
 {
     float: right;
+}
+
+form.bonus
+{
+    width:600px;
+    margin-right: 30%;
+    margin-left: 30%;
+    margin-top: 1%;
 }
 
 form.content
@@ -302,6 +315,17 @@ a.link
     bottom:2px;
 }
 
+a.edit
+{
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+a.editcomment
+{
+    top: 2px;
+    right: 2px;
+}
 button.linkauthor
 {
     bottom:2px;
@@ -316,6 +340,17 @@ button.linkauthor
     color: red;
     cursor: pointer;
 }
+
+button.submitdekete {
+    background-color: #8B0000;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    font-weight: bold;
+    padding: 6px 20px;
+    text-align: center;
+}
+
 button.submit {
     background-color: #CD5C5C;
     background: -webkit-gradient(linear, left top, left bottom, from(#CD5C5C), to(#F08080));

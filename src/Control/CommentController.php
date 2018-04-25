@@ -1,24 +1,96 @@
 <?php
 namespace Control;
 
-use View\View;
 use Model\CommDBModel;
 use Model\PostDBModel;
 
 class CommentController extends Controller
 {
-    
+
+    public function commentEditShow($comment_ID)
+    {
+
+        if (!$_SESSION['is_login'])
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+        $connect = new CommDBModel;
+
+        $comment = $connect -> getForIDComment($comment_ID);
+        if (!(($comment['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')))
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+
+        $data_for_view ['comment'] = $comment;
+        $this -> showPage ('CommentEditView',$data_for_view );
+    }
+
+    public function commentEditSave($comment_ID)
+    {
+        if (!$_SESSION['is_login'])
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+
+        $connect = new CommDBModel;
+        $comment = $connect -> getForIDComment($comment_ID);
+
+        if (!(($comment['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')))
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+
+        if (!isset($_POST["text"]))
+        {
+            $data_for_view ['comment'] = $comment;
+            $error_message = 'Wrong Data';
+            $data_for_view['error_message'] = $error_message;
+            $this -> showPage ('CommentEditView', $data_for_view);
+            return;
+        }
+
+        if (isset ($_POST['text']))
+        {
+            $text = $_POST['text'];
+        }
+        else $text = "";
+
+        $comment =
+            [
+                'author' => $_SESSION['userdata']['login'],
+                'text' => $text,
+                'datepub' => date("y-m-d H:i:s "),
+                'comment_ID'=> $comment_ID
+            ];
+        if ($connect -> editComment($comment))
+        {
+            $post_ID = $connect -> getForIDComment($comment_ID)['PostID'];
+            $page = 'Location: http://192.168.33.10/post/'.$post_ID;
+            header($page);
+        }
+        else {
+            $comment = $connect -> getForIDComment($comment_ID);
+            $data_for_view ['comment'] = $comment;
+            $error_message = 'Unknown error';
+            $data_for_view ['error_message'] = $error_message;
+            $this -> showPage ('CommentEditView', $data_for_view);
+        }
+    }
 
     public function createComment($post_ID)
     {
-        echo '-------------------'.$post_ID;
         $connect_post = new PostDBModel;
         $connect_comm = new CommDBModel;
         if (!isset($_POST["text"]))
         {
             $error_message = 'Empty comment';
             $data_for_view['error_message'] = $error_message;
-            View::pageGenerate ('FullPostView');
+            $this -> showPage ('FullPostView');
             return;
         }
         else $error_message = false;
@@ -34,8 +106,22 @@ class CommentController extends Controller
         print_r($comment);
         $connect_comm -> addComment($comment);
         $route = 'Location: http://192.168.33.10/post/'.$post_ID;
-
         header($route);
+    }
+
+    public function commentEditDelete($comment_ID)
+    {
+        if (!$_SESSION['is_login'])
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+        $connect = new CommDBModel;
+        $post_ID = $connect -> getForIDComment($comment_ID)['PostID'];
+        $connect -> deleteComment($comment_ID);
+        $_SESSION['message'] = 'Sucsess';
+        $page = 'Location: http://192.168.33.10/post/'.$post_ID;
+        header($page);
     }
 
 }

@@ -24,6 +24,9 @@
     ?>
     <br>
     <a  class = "link" href = "post/<?php echo $post['ID'] ?>" type = "submit"> Full </a>
+    <?php if (($post ['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')) {?>
+        <a  class = "edit" href = "/postedit/<?php echo $post['ID'] ?>" > [edit] </a>
+    <?php } ?>
 </div>
         <?php   } ?>
     

@@ -1,6 +1,6 @@
 <?php
-namespace Model;
 
+namespace Model;
 class PostDBModel extends DBModel
 {
 
@@ -93,12 +93,41 @@ class PostDBModel extends DBModel
         return $res;
     }
     
-    function getNumRows()
+    function getAmountRows()
     {
         $pdo = $this -> pdo;
         $st = $pdo -> prepare ('SELECT COUNT(*) FROM Blog.posts');
         $st -> execute();
         $res = $st -> fetchAll();
         return $res[0]['COUNT(*)'];
+    }
+
+    function editPost($post)
+    {
+        $pdo = $this -> pdo;
+
+        $statement = 'UPDATE Blog.posts';
+        if ($post['title']) $statement .=  " SET Title = :title ";
+        if ($post['text']) $statement .=  ", Text = :text ";
+        if ($post['image']) $statement .=  ", Image = :image ";
+        if ($post['status']) $statement .=  ", Status = :status ";
+        $statement .=  " WHERE ID = :post_ID";
+        $st = $pdo -> prepare($statement);
+        if ($post['title']) $st->bindParam(':title', $post['title']);
+        if ($post['text']) $st->bindParam(':text', $post['text']);
+        if ($post['image']) $st->bindParam(':image', $post['image']);
+        if ($post['status']) $st->bindParam(':status', $post['status']);
+        $st->bindParam(':post_ID', $post['post_ID']);
+        $st->execute();
+        return true;
+    }
+
+    function deletePost($post_ID)
+    {
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare('DELETE FROM Blog.posts WHERE ID = :post_ID');
+        $st->bindParam(':post_ID', $post_ID);
+        $st->execute();
+        return true;
     }
 }

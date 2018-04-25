@@ -23,13 +23,26 @@
                 'blogcreate' => ['Control' => 'BlogController', 'Action' => 'showBlogCreatePage'],
                 'settings' => ['Control' => 'UserController', 'Action' => 'showSettings'],
                 'css' => ['Control' => 'UserController', 'Action' => 'showSettings'],
-                'more' => ['Control' => 'MainpageController', 'Action' => 'showMore'],
+                'page' => ['Control' => 'MainpageController', 'Action' => 'showNPage'],
                 'post' => ['Control' => 'BlogController', 'Action' => 'fullPost'],
                 'user' => ['Control' => 'UserController', 'Action' => 'showOtherUserProfile'],
                 'createpost' => ['Control' => 'BlogController', 'Action' => 'createPost'],
                 'createcomment' => ['Control' => 'CommentController', 'Action' => 'createComment'],
+                'commentedit' => ['Control' => 'CommentController', 'Action' => 'commentEditShow'],
+                'commenteditsave' => ['Control' => 'CommentController', 'Action' => 'commentEditSave'],
+                'commenteditdelete' => ['Control' => 'CommentController', 'Action' => 'commentEditDelete'],
                 'searching' => ['Control' => 'BlogController', 'Action' => 'searching'],
                 'usertable' => ['Control' => 'AdminController', 'Action' => 'showUsersTable'],
+                'otheruseredit' => ['Control' => 'AdminController', 'Action' => 'editOtherUserDataShow'],
+                'otherusereditsave' => ['Control' => 'AdminController', 'Action' => 'editSaveOtherUserData'],
+                'otherusereditdelete' => ['Control' => 'AdminController', 'Action' => 'editDeleteOtherUserData'],
+                'otherusereditban' => ['Control' => 'AdminController', 'Action' => 'editBanOtherUserData'],
+                'otherusereditunban' => ['Control' => 'AdminController', 'Action' => 'editUnbanOtherUserData'],
+                'postedit' => ['Control' => 'BlogController', 'Action' => 'postEditShow'],
+                'posteditsave' => ['Control' => 'BlogController', 'Action' => 'postEditSave'],
+                'posteditdelete' => ['Control' => 'BlogController', 'Action' => 'postEditDelete'],
+
+
             ];
             if(isset($routing[$arr_route[1]]))
             {

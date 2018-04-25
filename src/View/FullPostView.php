@@ -11,13 +11,15 @@
     ?>
 
     </h6>
-
-            <h2> <?php echo $data_for_view['post']['Title'] ?> </h2>
-            <h5 class = "comment"> <?php echo $data_for_view['post']['Author'].",  ".$data_for_view['post']['DatePub'] ?> </h5>
-            <h4> <?php echo $data_for_view['post']['Text'] ?> </h4>
-            <?php
-            if ($data_for_view['post']['Image'] !== 'images/') echo "<img class = 'full' src = '{$data_for_view['post']['Image']}'>"
-            ?>
+    <h2> <?php echo $data_for_view['post']['Title'] ?> </h2>
+    <h5 class = "comment"> <?php echo $data_for_view['post']['Author'].",  ".$data_for_view['post']['DatePub'] ?> </h5>
+    <h4> <?php echo $data_for_view['post']['Text'] ?> </h4>
+    <?php
+    if ($data_for_view['post']['Image'] !== 'images/') echo "<img class = 'full' src = '/{$data_for_view['post']['Image']}'>"
+    ?>
+    <?php if ($_SESSION['is_login']) if (($data_for_view['post']['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')) {?>
+        <a  class = "edit" href = "/postedit/<?php echo $data_for_view['post']['ID'] ?>" > [edit] </a>
+    <?php } ?>
 
     <div class = "comment">
     <h3> Comments:</h3>
@@ -25,13 +27,18 @@
     if ($data_for_view['comments']) foreach ($data_for_view['comments'] as $comment)
     {?>
 
-        <h5 class = "comment"> <?php echo $comment['Author'].",  ".$comment['DatePub'] ?> </h5>
-        <h4> <?php echo $comment['Text'] ?> </h4>
+        <h5
+            class = "comment"> <?php echo $comment['Author'].",  ".$comment['DatePub'] ?>
+            <?php if ($_SESSION['is_login']) if (($comment['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')) {?>
+                <a  class = "editcomment" href = "/commentedit/<?php echo $comment['ID'] ?>" > [edit] </a>
+            <?php } ?></h5>
+        <h4><?php echo $comment['Text'] ?></h4>
 
     <?php } ?>
 </div>
 
 </div>
+<?php if ($_SESSION['is_login'] && $_SESSION['userdata']['status'] !==  'banned') { ?>
 <div>
     <h3> Add new comment:</h3>
     <form action = "/createcomment/<?php echo $data_for_view['post']['ID'] ?>" method = "post" name = "comment">
@@ -39,7 +46,7 @@
         <button class = "submit" type = "submit">Add comment</button>
     </form>
 </div>
-
+<?php } ?>
 
 </body>
 </html>

@@ -2,7 +2,7 @@
 namespace Control;
 
 use Model\PostDBModel;
-use View\View;
+
 class MainPageController extends Controller
 {
 
@@ -11,28 +11,36 @@ class MainPageController extends Controller
 
     }
 
-    public function showMainPage($route_date)
+    public function showMainPage()
     {
+        $page_number = 0;
         $from = 0;
         $to = 10;
         $connect = new PostDBModel;
-        $num_all_posts = ($connect -> getNumRows());
         $all_posts  = $connect -> getFromToPosts($from, $to);
         $data_for_view ['all_posts'] = $all_posts;
-        $data_for_view['num_all_posts'] = $num_all_posts;
-        View::pageGenerate ('MainpageView', $data_for_view);
+        $amount_posts  = $connect -> getAmountRows();
+        $amount_pages = $amount_posts / 10;
+        $amount_pages = ceil ($amount_pages);
+        $data_for_view ['amount_pages'] = $amount_pages;
+        $data_for_view ['current_page'] = $page_number;
+        $this -> showPage ('MainpageView', $data_for_view);
     }
 
-    public function showNPage($route_data)
+    public function showNPage($page_number)
     {
-        $numposts = $route_data;
+        $page_number --;
         $connect = new PostDBModel;
-        $is_last = ($connect -> getNumRows() >= $numposts);
-        $post = $connect -> getNumPosts($numposts);
-        $all_posts = $post;
+        $from = 10 * $page_number;
+        $to = $from + 10;
+        $all_posts = $connect -> getFromToPosts($from, $to);
         $data_for_view['all_posts'] = $all_posts;
-        $data_for_view['is_last'] = $is_last;
-        View::pageGenerate ('MainpageView', $data_for_view);
+        $amount_posts  = $connect -> getAmountRows();
+        $amount_pages = $amount_posts / 10;
+        $amount_pages = ceil ($amount_pages);
+        $data_for_view ['amount_pages'] = $amount_pages;
+        $data_for_view ['current_page'] = $page_number;
+        $this -> showPage ('MainpageView', $data_for_view);
     }
 
 }
