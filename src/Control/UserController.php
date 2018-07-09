@@ -118,7 +118,7 @@ class UserController extends Controller
             ];
         if ($connect -> addUser($user))
         {
-            $user = new UserModel($user['login'], $user['pass'], $user['username'], $user['about_me'],'reader',$user['reg_date']);
+            $user = new UserModel($user['login'], $user['pass'], $user['username'], $user['about_me'],'reader',$user['reg_date'], 'unban');
             $_SESSION['is_login'] = 1;
             $_SESSION['userdata'] = $user -> allData();
             $this -> showPage ('UserProfileView');

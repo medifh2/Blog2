@@ -183,7 +183,9 @@ class BlogController extends Controller
             ];
         if ($connect -> addPost($post))
         {
-            $this->showPage('UserBlogView');
+            $host  = $_SERVER['HTTP_HOST'];
+            $page = 'Location: http://'.$host.'/userpage';
+            header($page);
         }
         else {
             $error_message = 'Unknown error';
@@ -221,9 +223,21 @@ class BlogController extends Controller
         
         if ($query)
         {
-            $posts = $connect_post->getForQuery($query);
-            $authors = $connect_user->getForQuery($query);
-            $data_for_view['found_post'] = $posts;
+            $posts = $connect_post -> getForQuery($query);
+            $acc_posts = array();
+            foreach ($posts as $post)
+            {
+                if (!$_SESSION['is_login'])
+                {
+                    if ($post['Status'] === 'published')
+                        $acc_posts[] = $post;
+                }
+                else
+                if (($post['Author'] === $_SESSION['userdata']['login']) || ($post['Status'] === 'published'))
+                    $acc_posts[] = $post;
+            }
+            $authors = $connect_user -> getForQuery($query);
+            $data_for_view['found_post'] = $acc_posts;
             $data_for_view['found_author'] = $authors;
         }
         else {
@@ -231,72 +245,6 @@ class BlogController extends Controller
             $data_for_view['found_author'] = false;
         }
         $this -> showPage ('SearchResultView', $data_for_view);
-       /* if (isset($_POST["Author_login"]) && $_POST["Author_login"])
-        {
-            $_POST["Author_login"] = str_replace(' ','',$_POST["Author_login"]);
-            $login = $_POST["Author_login"];
-        }
-        else $login = false;
-
-        if (isset($_POST["Author_username"]) && $_POST["Author_username"])
-        {
-            $_POST["Author_username"] = str_replace(' ','',$_POST["Author_username"]);
-            $username = $_POST["Author_username"];
-        }
-        else $username = false;
-
-        if (isset($_POST["Title"]) && $_POST["Title"])
-        {
-            $_POST["Title"] = str_replace(' ','',$_POST["Title"]);
-            $title = $_POST["Title"];
-        }
-        else $title = false;
-
-        if (isset($_POST["From"]) && $_POST["From"])
-        {
-            $_POST["From"] = str_replace(' ','',$_POST["From"]);
-            $date_from = $_POST["From"];
-        }
-        else $date_from = "0000:01:01 00-00-00";
-
-        if (isset($_POST["To"]) && $_POST["To"])
-        {
-            $_POST["To"] = str_replace(' ','',$_POST["To"]);
-            $date_to = $_POST["To"];
-        }
-        else $date_to = "9999:01:01 00-00-00";
-
-        if (!$login)
-        {
-            $login_arr = $connect_user->getInfoForName($username);
-        }
-        else {
-            if ($login)
-            {
-                $login_arr = [ '0' => $login];
-            }
-            else $login_arr = false;
-        }
-        if ($found_author = $login_arr);
-        else 
-        {
-            $found_author = false;
-        }
-        if (!$title || !$login_arr || ($date_from !== "0000:01:01 00-00-00" && $date_to !== "9999:01:01 00-00-00"))
-        {
-            if ($found_post = $connect_post->getForDataPost($login_arr, $date_from, $date_to, $title)); 
-            else
-            {
-            $found_post = false;
-            }
-        }
-        else
-        {
-            $found_post = false;
-        }
-        $data_for_view['found_post'] = $found_post;
-        $data_for_view['found_author'] = $found_author;
-        View:: pageGenerate ('SearchResultView', $data_for_view);*/
     }
 
     public function fullPost($route_data)
