@@ -1,6 +1,4 @@
 RewriteEngine On
 
-RewriteBase /
-
 Options All -Indexes
-RewriteRule ^(.*)$ index.php [L]
+RewriteRule .* index.php [L]
