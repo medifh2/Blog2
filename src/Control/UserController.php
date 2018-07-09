@@ -38,7 +38,9 @@ class UserController extends Controller
     {
         $_SESSION['is_login'] = false;
         unset($_SESSION['userdata']);
-        header('Location: http://192.168.33.10/');
+        $host  = $_SERVER['HTTP_HOST'];
+        $route = 'Location: http://'.$host.'/';
+        header($route);
     }
 
     public function login()
@@ -61,10 +63,10 @@ class UserController extends Controller
         if ($userdata = $connect -> loginUser($login, $pass))
         {
             $user = new UserModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me'], $userdata['Accesslvl'], $userdata['RegDate'], $userdata['Status']);
-            print_r ($user -> allData());
+            //print_r ($user -> allData());
             $_SESSION['is_login'] = 1;
             $_SESSION['userdata'] = $user -> allData();
-            header('Location: http://192.168.33.10/');
+            $this -> showPage ('UserProfileView');
         }
         else
             {
@@ -119,7 +121,7 @@ class UserController extends Controller
             $user = new UserModel($user['login'], $user['pass'], $user['username'], $user['about_me'],'reader',$user['reg_date']);
             $_SESSION['is_login'] = 1;
             $_SESSION['userdata'] = $user -> allData();
-            header('Location: http://192.168.33.10/');
+            $this -> showPage ('UserProfileView');
         }
         else {
             $date_for_view['error_message'] = 'A User with such data is already registered!' ;
@@ -157,7 +159,7 @@ class UserController extends Controller
         {
             if ($_POST["n_username"]) $_SESSION['userdata']["username"] = $_POST["n_username"];
             if ($_POST["n_about"]) $_SESSION['userdata']["about_me"] = $_POST["n_about"];
-            header('Location: http://192.168.33.10/profile');
+            $this -> showPage ('UserProfileView');
         }
         else
             {

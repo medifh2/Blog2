@@ -59,7 +59,8 @@ class AdminController extends Controller
                 'lvl' => $_POST["lvl"],
             ];
         $connect -> editOtherUser($user);
-        $location = 'Location: http://192.168.33.10/user/'.$user_ID;
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/user/'.$user_ID;
         header($location);
     }
 
@@ -74,7 +75,8 @@ class AdminController extends Controller
 
         $connect = new UserDBModel;
         $connect -> deleteUser($user_ID);
-        $location = 'Location: http://192.168.33.10/usertable';
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/usertable';
         header($location);
     }
 
@@ -89,7 +91,8 @@ class AdminController extends Controller
 
         $connect = new UserDBModel;
         $connect -> banUser($user_ID);
-        $location = 'Location: http://192.168.33.10/user/'.$user_ID;
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/user/'.$user_ID;
         header($location);
     }
 
@@ -104,7 +107,8 @@ class AdminController extends Controller
 
         $connect = new UserDBModel;
         $connect -> unbanUser($user_ID);
-        $location = 'Location: http://192.168.33.10/user/'.$user_ID;
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/user/'.$user_ID;
         header($location);
     }
 

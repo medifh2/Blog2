@@ -70,8 +70,9 @@ class CommentController extends Controller
         if ($connect -> editComment($comment))
         {
             $post_ID = $connect -> getForIDComment($comment_ID)['PostID'];
-            $page = 'Location: http://192.168.33.10/post/'.$post_ID;
-            header($page);
+            $host  = $_SERVER['HTTP_HOST'];
+            $route = 'Location: http://'.$host.'/post/'.$post_ID;
+            header($route);
         }
         else {
             $comment = $connect -> getForIDComment($comment_ID);
@@ -105,8 +106,10 @@ class CommentController extends Controller
             ];
         print_r($comment);
         $connect_comm -> addComment($comment);
-        $route = 'Location: http://192.168.33.10/post/'.$post_ID;
+        $host  = $_SERVER['HTTP_HOST'];
+        $route = 'Location: http://'.$host.'/post/'.$post_ID;
         header($route);
+        $this -> showPage ('UserProfileView');
     }
 
     public function commentEditDelete($comment_ID)
@@ -120,7 +123,8 @@ class CommentController extends Controller
         $post_ID = $connect -> getForIDComment($comment_ID)['PostID'];
         $connect -> deleteComment($comment_ID);
         $_SESSION['message'] = 'Sucsess';
-        $page = 'Location: http://192.168.33.10/post/'.$post_ID;
+        $host  = $_SERVER['HTTP_HOST'];
+        $page = 'Location: http://'.$host.'/post/'.$post_ID;
         header($page);
     }
 

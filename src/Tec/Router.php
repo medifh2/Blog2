@@ -41,8 +41,6 @@
                 'postedit' => ['Control' => 'BlogController', 'Action' => 'postEditShow'],
                 'posteditsave' => ['Control' => 'BlogController', 'Action' => 'postEditSave'],
                 'posteditdelete' => ['Control' => 'BlogController', 'Action' => 'postEditDelete'],
-
-
             ];
             if(isset($routing[$arr_route[1]]))
             {

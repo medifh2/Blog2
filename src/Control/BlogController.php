@@ -50,7 +50,7 @@ class BlogController extends Controller
         $connect = new PostDBModel;
         $connect -> deletePost($post_ID);
         $_SESSION['message'] = 'Sucsess';
-        header('Location: http://192.168.33.10/');
+        $this -> showPage ('MainpageView');
     }
     
     public function postEditSave($post_ID)
@@ -111,8 +111,8 @@ class BlogController extends Controller
             ];
         if ($connect -> editPost($post))
         {
-            
-            $page = 'Location: http://192.168.33.10/post/'.$post_ID;
+            $host  = $_SERVER['HTTP_HOST'];
+            $page = 'Location: http://'.$host.'/post/'.$post_ID;
             header($page);
         }
         else {
@@ -183,7 +183,7 @@ class BlogController extends Controller
             ];
         if ($connect -> addPost($post))
         {
-            header('Location: http://192.168.33.10/userpage');
+            $this->showPage('UserBlogView');
         }
         else {
             $error_message = 'Unknown error';
