@@ -208,17 +208,17 @@ class BlogController extends Controller
         $this -> showPage ('UserBlogView',$data_for_view);
     }
 
-    public function searching()
+    public function search()
     {
         $connect_post = new PostDBModel;
         $connect_user = new UserDBModel;
-        $_POST['query'] = str_replace(' ','',$_POST['query']);
-        $query = $_POST['query'];
+        $_GET['query'] = str_replace('+',' ',$_GET['query']);
+        $query = $_GET['query'];
         
-        if (isset($_POST['users']))$data_for_view['users'] = true;
+        if (isset($_GET['users']))$data_for_view['users'] = true;
         else $data_for_view['users'] = false;
         
-        if (isset($_POST['posts']))$data_for_view['posts'] = true;
+        if (isset($_GET['posts']))$data_for_view['posts'] = true;
         else $data_for_view['posts'] = false;
         
         if ($query)

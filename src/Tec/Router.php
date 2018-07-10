@@ -9,6 +9,7 @@
             $route = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
             $arr_route = explode ('/' , $route);
             $route = $arr_route[1];
+            //$action = $arr_route[2];
             if (isset($arr_route[2])) $route_data = $arr_route[2];
             else $route_data = false;
             $routing = [
@@ -17,7 +18,7 @@
                 'registration' => ['Control' => 'UserController', 'Action' => 'registration'],
                 'userpage' => ['Control' => 'BlogController', 'Action' => 'showUserBlog'],
                 'profile' => ['Control' => 'UserController', 'Action' => 'showUserProfile'],
-                'edituser' => ['Control' => 'UserController', 'Action' => 'editUserData'],
+                'user' => ['Control' => 'UserController', 'Action' => 'showOtherUserProfile'],
                 'logout' => ['Control' => 'UserController', 'Action' => 'logout'],
                 'changeabout' => ['Control' => 'UserController', 'Action' => 'changeAbout'],
                 'blogcreate' => ['Control' => 'BlogController', 'Action' => 'showBlogCreatePage'],
@@ -31,7 +32,7 @@
                 'commentedit' => ['Control' => 'CommentController', 'Action' => 'commentEditShow'],
                 'commenteditsave' => ['Control' => 'CommentController', 'Action' => 'commentEditSave'],
                 'commenteditdelete' => ['Control' => 'CommentController', 'Action' => 'commentEditDelete'],
-                'searching' => ['Control' => 'BlogController', 'Action' => 'searching'],
+                'search' => ['Control' => 'BlogController', 'Action' => 'search'],
                 'usertable' => ['Control' => 'AdminController', 'Action' => 'showUsersTable'],
                 'otheruseredit' => ['Control' => 'AdminController', 'Action' => 'editOtherUserDataShow'],
                 'otherusereditsave' => ['Control' => 'AdminController', 'Action' => 'editSaveOtherUserData'],
@@ -42,6 +43,8 @@
                 'posteditsave' => ['Control' => 'BlogController', 'Action' => 'postEditSave'],
                 'posteditdelete' => ['Control' => 'BlogController', 'Action' => 'postEditDelete'],
             ];
+
+
             if(isset($routing[$arr_route[1]]))
             {
                 $controller = '\\Control\\'.$routing[$route]['Control'];

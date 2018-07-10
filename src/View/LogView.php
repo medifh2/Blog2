@@ -3,9 +3,11 @@
 <html>
 <form class="form" method = "post" action = "login">
     <h6 class = 'error'>
-    <?php if (isset($data_for_view['$error_message']))
-        echo $data_for_view['$error_message']."<br>";
-    $data_for_view['$error_message'] = 0;
+    <?php if (isset($data_for_view['error_message']))
+    {
+        echo $data_for_view['error_message']."<br>";
+        unset ($data_for_view['error_message']);
+    }
     ?>
     </h6>
     <ul>

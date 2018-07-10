@@ -65,13 +65,12 @@ class UserController extends Controller
             $user = new UserModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me'], $userdata['Accesslvl'], $userdata['RegDate'], $userdata['Status']);
             //print_r ($user -> allData());
             $_SESSION['is_login'] = 1;
-            $_SESSION['userdata'] = $user -> allData();
+            $_SESSION['userdata'] = $user -> getUserInfo();
             $this -> showPage ('UserProfileView');
         }
         else
             {
-                $error_message = 'Wrong password or login';
-                $data_for_view['error_message'] = $error_message;
+                $data_for_view['error_message'] = 'Wrong password or login';
                 $this -> showPage ('LogView', $data_for_view);
             }
 
@@ -120,7 +119,7 @@ class UserController extends Controller
         {
             $user = new UserModel($user['login'], $user['pass'], $user['username'], $user['about_me'],'reader',$user['reg_date'], 'unban');
             $_SESSION['is_login'] = 1;
-            $_SESSION['userdata'] = $user -> allData();
+            $_SESSION['userdata'] = $user -> getUserInfo();
             $this -> showPage ('UserProfileView');
         }
         else {

@@ -20,7 +20,12 @@
     <br>
     <textarea title = 'Your post' name = 'text' cols = "60" rows = "15"><?php echo $data_for_view ['post']['Text'] ?></textarea>
     <br>
-    Publish: <input title = "status"  type = "checkbox" name = "status" >  <br><br>
+    Publish: <input title = "status"  type = "checkbox" name = "status"
+        <?php if ($data_for_view ['post']['Status'] == 'published') { ?>
+            checked
+        <?php } ?>
+    >
+    <br><br>
     <button class = "submit" type = "submit"> Save </button>
 </form>
 <form class = "bonus" method = "post" action = "/posteditdelete/<?php echo $data_for_view ['post']['ID'] ?>">

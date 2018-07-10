@@ -16,7 +16,7 @@ class UserModel extends Model
         $this -> status = $status;
     }
 
-    public function allData()
+    public function getUserInfo()
     {
         $res =[
             'login' => $this -> login,

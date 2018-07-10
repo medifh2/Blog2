@@ -40,13 +40,16 @@
         </ul>
     </form>
     -->
-    <?php if ($data_for_view['users']) {?>
+    <?php if (!(($data_for_view['users']) || ($data_for_view['posts']))) { ?>
+    <h6 class = "error">  Please select Users or Post filter for searching </h6>
+    <?php } ?>
+    <?php if ($data_for_view['users']) { ?>
     <h2> Found users: </h2>
     <?php
     if ($data_for_view['found_author'])
     foreach ($data_for_view['found_author'] as $author) { ?>
             <a  href = "user/<?php echo $author['ID']?> " > <?php echo $author['Username'].' ('.$author['Login'].')' ?> </a>
-    <?php } else echo "<div> Users not found </div>"; }?>
+    <?php } else echo " Users not found "; }?>
 
     <?php if ($data_for_view['posts']) { ?>
     <h2> Found posts: </h2>
