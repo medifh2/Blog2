@@ -5,9 +5,11 @@
 <body>
 <div class = "content">
     <h6 class = 'success'>
-        <?php if (isset($_SESSION['message']))
-            echo $_SESSION['message']."<br>";
-        unset($_SESSION['message']);
+        <?php if (isset($data_for_view['message']))
+        {
+            echo $data_for_view['message'] . "<br>";
+            unset($data_for_view['message']);
+        }
         ?>
     </h6>
     <h1>Main page</h1>
@@ -28,7 +30,7 @@
     ?>
     <br>
     <a  class = "link" href = "post/<?php echo $post['ID'] ?>" > Full </a>
-    <?php if ($_SESSION['is_login']) if (($post ['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')) {?>
+    <?php if (isset($_SESSION['user_id'])) if (($post ['Author'] == $data_for_view['user']['Login']) || ($data_for_view['user']['Accesslvl'] == 'admin')) {?>
         <a  class = "edit" href = "/postedit/<?php echo $post['ID'] ?>" > [edit] </a>
     <?php } ?>
 </div>

@@ -15,7 +15,7 @@
     <br>
     <textarea title = 'Your post' name = 'text' cols = "60" rows = "15"></textarea>
     <br>
-    <?php if ( $_SESSION['userdata']['status'] !==  'banned') {?>
+    <?php if ( $data_for_view['user']['Status'] !==  'banned') {?>
         Publish: <input title = "status"  type = "checkbox" name = "status" >  <br><br>
     <?php } else {?>
         Unpublished

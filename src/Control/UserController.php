@@ -1,43 +1,41 @@
 <?php
 namespace Control;
-
 use Model\UserDBModel;
-use Model\UserModel;
-
 class UserController extends Controller
 {
 
     public function showSettings()
     {
-        if (!$_SESSION['is_login']) {
+        if (!isset($_SESSION['user_id'])) {
             $this -> showPage ('Error404View');
             return;
         }
-        $this -> showPage ('UserProfileSettingsView');
+        $data_for_view['user'] = $this -> getUserInfo(isset($_SESSION['user_id']));
+        $this -> showPage ('UserProfileSettingsView', $data_for_view);
     }
 
     public function showUserProfile()
     {
-        if (!$_SESSION['is_login']) {
+        if (!isset($_SESSION['user_id'])) {
             $this -> showPage ('Error404View');
             return;
         }
-        $this -> showPage ('UserProfileView');
+        $data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
+        $this -> showPage ('UserProfileView', $data_for_view);
     }
     
     public function showOtherUserProfile($user_id)
     {
         $connect = new UserDBModel;
         $user = $connect -> getForID($user_id);
-        $user ['ID'] = $user_id;
         $data_for_view['other_user_data'] = $user;
+        $data_for_view['user'] = $this -> getUserInfo(isset($_SESSION['user_id']));
         $this -> showPage ('OtherUserProfileView',$data_for_view);
     }
 
     public function logout()
     {
-        $_SESSION['is_login'] = false;
-        unset($_SESSION['userdata']);
+        unset($_SESSION['user_id']);
         $host  = $_SERVER['HTTP_HOST'];
         $route = 'Location: http://'.$host.'/';
         header($route);
@@ -51,7 +49,7 @@ class UserController extends Controller
             return;
         }
 
-        if ($_SESSION['is_login'])
+        if (isset($_SESSION['user_id']))
         {
             $this -> showPage('Error404View');
             return;
@@ -62,11 +60,10 @@ class UserController extends Controller
         $pass = md5($_POST["pass"]);
         if ($userdata = $connect -> loginUser($login, $pass))
         {
-            $user = new UserModel($userdata['Login'], $userdata['Password'], $userdata['Username'], $userdata['About_me'], $userdata['Accesslvl'], $userdata['RegDate'], $userdata['Status']);
             //print_r ($user -> allData());
-            $_SESSION['is_login'] = 1;
-            $_SESSION['userdata'] = $user -> getUserInfo();
-            $this -> showPage ('UserProfileView');
+            $_SESSION['user_id'] = $userdata['ID'];
+            $data_for_view['user'] = $this->getUserInfo($_SESSION['user_id']);
+            $this -> showPage ('UserProfileView', $data_for_view);
         }
         else
             {
@@ -83,7 +80,7 @@ class UserController extends Controller
             $this -> showPage ('RegView');
             return;
         }
-        if ($_SESSION['is_login'])
+        if (isset($_SESSION['user_id']))
         {
             $this -> showPage ('Error404View');
             return;
@@ -113,14 +110,13 @@ class UserController extends Controller
                 'lvl' => 'reader',
                 'reg_date' => date("y-m-d H:i:s "),
                 'user_configs' => '',
-                'status' => ''
+                'status' => 'unban'
             ];
-        if ($connect -> addUser($user))
+        if ($user['login'] = $connect -> addUser($user))
         {
-            $user = new UserModel($user['login'], $user['pass'], $user['username'], $user['about_me'],'reader',$user['reg_date'], 'unban');
-            $_SESSION['is_login'] = 1;
-            $_SESSION['userdata'] = $user -> getUserInfo();
-            $this -> showPage ('UserProfileView');
+            $_SESSION['user_id'] = $user['login'];
+            $data_for_view['user'] = $this->getUserInfo($_SESSION['user_id']);
+            $this -> showPage ('UserProfileView', $data_for_view);
         }
         else {
             $date_for_view['error_message'] = 'A User with such data is already registered!' ;
@@ -131,7 +127,7 @@ class UserController extends Controller
 
     public function editUserData()
     {
-        if (!$_SESSION['is_login'])
+        if (!isset($_SESSION['user_id']))
         {
             $this -> showPage ('Error404View');
             return;
@@ -148,7 +144,7 @@ class UserController extends Controller
         $c_pass = md5($_POST["c_pass"]);
         $user =
             [
-                'login' => $_SESSION['userdata']['login'],
+                'login' => $this -> getUserInfo($_SESSION['user_id'])['Login'],
                 'pass' => $n_pass,
                 'c_pass' => $c_pass,
                 'username' => $_POST["n_username"],
@@ -156,15 +152,118 @@ class UserController extends Controller
             ];
         if ($connect -> editUser($user))
         {
-            if ($_POST["n_username"]) $_SESSION['userdata']["username"] = $_POST["n_username"];
-            if ($_POST["n_about"]) $_SESSION['userdata']["about_me"] = $_POST["n_about"];
-            $this -> showPage ('UserProfileView');
+            $data_for_view['message'] = 'Changes were saved';
+            $data_for_view['user'] = $this->getUserInfo($_SESSION['user_id']);
+            $this -> showPage ('UserProfileView', $data_for_view);
         }
         else
             {
                 $error_message = "Wrong password";
                 $data_for_view['error_message'] = $error_message;
+                $data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
                 $this -> showPage ('UserProfileSettingsView', $data_for_view);
             }
     }
+
+    public function showUsersTable()
+    {
+        $connect = new UserDBModel;
+        $all_users = ($connect -> getFromToUsers(0, 10));
+        $data_for_view ['all_users'] = $all_users;
+        $this -> showPage ('UserTableView', $data_for_view);
+    }
+
+    public function editOtherUserDataShow($user_ID)
+    {
+        if (!isset($_SESSION['user_id']))
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+        $connect = new UserDBModel;
+
+        $user = $connect -> getForID($user_ID);
+        $user ['ID'] = $user_ID;
+        if (!($this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] == 'admin'))
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+
+        $data_for_view ['other_user_data'] = $user;
+        $data_for_view ['about_me'] = $this -> getUserInfo($_SESSION['user_id'])['About_me'];
+        $this -> showPage ('OtherUserEditView',$data_for_view );
+    }
+
+    public function editSaveOtherUserData($user_ID)
+    {
+        if (!isset($_SESSION['user_id']))
+        {
+            $this -> showPage ('Error404View');
+            return;
+        }
+
+        $connect = new UserDBModel;
+        $user =
+            [
+                'user_ID' => $user_ID,
+                'login' => $_POST["login"],
+                'username' => $_POST["username"],
+                'about_me' => $_POST["about"],
+                'lvl' => $_POST["lvl"],
+            ];
+        $connect -> editOtherUser($user);
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/user/'.$user_ID;
+        header($location);
+    }
+
+    public function editDeleteOtherUserData($user_ID)
+    {
+        if (!isset($_SESSION['user_id']))
+            if (!$this -> getUserInfo($_SESSION['user_id'])['Accessslvl'] !== 'admin')
+            {
+                $this -> showPage ('Error404View');
+                return;
+            }
+
+        $connect = new UserDBModel;
+        $connect -> deleteUser($user_ID);
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/usertable';
+        header($location);
+    }
+
+    public function editBanOtherUserData($user_ID)
+    {
+        if (!isset($_SESSION['user_id']))
+            if (!$this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] !== 'admin')
+            {
+                $this -> showPage ('Error404View');
+                return;
+            }
+
+        $connect = new UserDBModel;
+        $connect -> banUser($user_ID);
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/user/'.$user_ID;
+        header($location);
+    }
+
+    public function editUnbanOtherUserData($user_ID)
+    {
+        if (!isset($_SESSION['user_id']))
+            if (!$this -> getUserInfo($_SESSION['user_id'])['Accessslvl'] !== 'admin')
+            {
+                $this -> showPage ('Error404View');
+                return;
+            }
+
+        $connect = new UserDBModel;
+        $connect -> unbanUser($user_ID);
+        $host  = $_SERVER['HTTP_HOST'];
+        $location = 'Location: http://'.$host.'/user/'.$user_ID;
+        header($location);
+    }
+    
 }

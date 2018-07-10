@@ -5,7 +5,7 @@
 <body>
 <div class = "content">
 
-    <?php if (($_SESSION['userdata']['lvl'] === 'writer') || ($_SESSION['userdata']['lvl'] === 'admin'))
+    <?php if (($data_for_view['user']['Accesslvl'] === 'writer') || ($data_for_view['user']['Accesslvl'] === 'admin'))
         echo '<h4><a  href = "blogcreate"> Create new post </a> </h4>';
     ?>
     <h1>Posts:</h1>
@@ -24,7 +24,7 @@
     ?>
     <br>
     <a  class = "link" href = "post/<?php echo $post['ID'] ?>" type = "submit"> Full </a>
-    <?php if (($post ['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')) {?>
+    <?php if (($post ['Author'] == $data_for_view['user']['Login']) || ($data_for_view['user']['Accesslvl'] == 'admin')) {?>
         <a  class = "edit" href = "/postedit/<?php echo $post['ID'] ?>" > [edit] </a>
     <?php } ?>
 </div>

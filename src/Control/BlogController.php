@@ -4,14 +4,13 @@ namespace Control;
 use Model\PostDBModel;
 use Model\CommDBModel;
 use Model\UserDBModel;
-
 class BlogController extends Controller
 {
 
     function __construct()
     {
-        if (!$_SESSION['is_login'])
-            if (!$_SESSION['userdata']['lvl'] = 'admin')
+        if (isset($_SESSION['user_id']))
+            if (!$this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] == 'admin')
         {
             $this -> showPage ('Error404View');
             return;
@@ -21,15 +20,15 @@ class BlogController extends Controller
     public function postEditShow($post_ID)
     {
 
-        if (!$_SESSION['is_login'])
+        if (!$_SESSION['user_id'])
         {
             $this -> showPage ('Error404View');
             return;
         }
         $connect = new PostDBModel;
-
+        $connect_u = new UserDBModel;
         $post = $connect -> getForIDPost($post_ID);
-        if (!(($post['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')))
+        if (!(($post['Author'] == $this -> getUserInfo($_SESSION['user_id'])['Login']) || ($this -> getUserInfo($_SESSION['user_id'])['Accessslvl'] == 'admin')))
         {
             $this -> showPage ('Error404View');
             return;
@@ -41,7 +40,7 @@ class BlogController extends Controller
 
     public function postEditDelete($post_ID)
     {
-        if (!$_SESSION['is_login'])
+        if (!$_SESSION['user_id'])
         {
             $this -> showPage ('Error404View');
             return;
@@ -49,13 +48,13 @@ class BlogController extends Controller
 
         $connect = new PostDBModel;
         $connect -> deletePost($post_ID);
-        $_SESSION['message'] = 'Sucsess';
+        $data_for_view["message"] = "Success";
         $this -> showPage ('MainpageView');
     }
     
     public function postEditSave($post_ID)
     {
-        if (!$_SESSION['is_login'])
+        if (!$_SESSION['user_id'])
         {
             $this -> showPage ('Error404View');
             return;
@@ -64,7 +63,7 @@ class BlogController extends Controller
         $connect = new PostDBModel;
         $post = $connect -> getForIDPost($post_ID);
         
-        if (!(($post['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')))
+        if (!(($post['Author'] == $this -> getUserInfo($_SESSION['user_id'])['Login']) || ($this -> getUserInfo($_SESSION['user_id'])['Accessslvl'] == 'admin')))
         {
             $this -> showPage ('Error404View');
             return;
@@ -102,7 +101,7 @@ class BlogController extends Controller
         $post =
             [
                 'title' => $_POST["title"],
-                'author' => $_SESSION['userdata']['login'],
+                'author' => $this -> getUserInfo($_SESSION['user_id'])['Login'],
                 'text' => $text,
                 'image' => 'images/'.$image,
                 'datepub' => date("y-m-d H:i:s "),
@@ -126,20 +125,20 @@ class BlogController extends Controller
     
     public function showBlogCreatePage()
     {
-        if (!$_SESSION['is_login'])
-            if ($_SESSION['userdata']['lvl'] = 'reader')
+        if (!isset($_SESSION['is_login']))
+            if ($this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] == 'reader')
             {
                 $this -> showPage('Error404View');
                 return;
             }
-
-        $this -> showPage ('BlogCreateView');
+        $data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
+        $this -> showPage ('BlogCreateView', $data_for_view);
     }
 
     public function createPost()
     {
-        if (!$_SESSION['is_login'])
-            if ($_SESSION['userdata']['lvl'] = 'reader')
+        if (!isset($_SESSION['is_login']))
+            if ($this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] == 'reader')
             {
                 $this -> showPage('Error404View');
                 return;
@@ -175,7 +174,7 @@ class BlogController extends Controller
         $post =
             [
                 'title' => $_POST["title"],
-                'author' => $_SESSION['userdata']['login'],
+                'author' => $this -> getUserInfo($_SESSION['user_id'])['Login'],
                 'text' => $text,
                 'image' => 'images/'.$image,
                 'datepub' => date("y-m-d H:i:s "),
@@ -196,15 +195,16 @@ class BlogController extends Controller
 
     public function showUserBlog()
     {
-        if (!$_SESSION['is_login'])
+        if (!isset($_SESSION['user_id']))
             {
                 $this -> showPage('Error404View');
                 return;
             }
 
         $connect = new PostDBModel;
-        $userposts = $connect -> getForLoginPost($_SESSION['userdata']['login']);
+        $userposts = $connect -> getForLoginPost($this -> getUserInfo($_SESSION['user_id'])['Login']);
         $data_for_view['userposts'] = $userposts;
+        $data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
         $this -> showPage ('UserBlogView',$data_for_view);
     }
 
@@ -227,13 +227,13 @@ class BlogController extends Controller
             $acc_posts = array();
             foreach ($posts as $post)
             {
-                if (!$_SESSION['is_login'])
+                if (!isset($_SESSION['user_id']))
                 {
                     if ($post['Status'] === 'published')
                         $acc_posts[] = $post;
                 }
                 else
-                if (($post['Author'] === $_SESSION['userdata']['login']) || ($post['Status'] === 'published'))
+                if (($post['Author'] === $this -> getUserInfo($_SESSION['user_id'])['Login']) || ($post['Status'] === 'published'))
                     $acc_posts[] = $post;
             }
             $authors = $connect_user -> getForQuery($query);
@@ -257,7 +257,6 @@ class BlogController extends Controller
         }
         $post_ID =  $route_data;
         $connect_postDB = new PostDBModel;
-
         $post = $connect_postDB -> getForIDPost($post_ID);
 
         $connect_commDB = new CommDBModel;
@@ -270,9 +269,44 @@ class BlogController extends Controller
             [
                 'post' => $post,
                 'post_ID' => $post_ID,
-                'comments' => $comments
+                'comments' => $comments,
             ];
+        if (isset($_SESSION['user_id']))$data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
         $this -> showPage ('FullPostView', $data_for_view);
     }
 
+    public function showMainPage()
+    {
+        $page_number = 0;
+        $from = 0;
+        $to = 10;
+        $connect = new PostDBModel;
+        $all_posts  = $connect -> getFromToPosts($from, $to);
+        $data_for_view ['all_posts'] = $all_posts;
+        $amount_posts  = $connect -> getAmountRows();
+        $amount_pages = $amount_posts / 10;
+        $amount_pages = ceil ($amount_pages);
+        $data_for_view ['amount_pages'] = $amount_pages;
+        $data_for_view ['current_page'] = $page_number;
+        if (isset($_SESSION['user_id'])) $data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
+        $this -> showPage ('MainpageView', $data_for_view);
+    }
+
+    public function showNPage($page_number)
+    {
+        $page_number --;
+        $connect = new PostDBModel;
+        $from = 10 * $page_number;
+        $to = $from + 10;
+        $all_posts = $connect -> getFromToPosts($from, $to);
+        $data_for_view['all_posts'] = $all_posts;
+        $amount_posts  = $connect -> getAmountRows();
+        $amount_pages = $amount_posts / 10;
+        $amount_pages = ceil ($amount_pages);
+        $data_for_view ['amount_pages'] = $amount_pages;
+        $data_for_view ['current_page'] = $page_number;
+        if (isset($_SESSION['user_id'])) $data_for_view['user'] = $this -> getUserInfo($_SESSION['user_id']);
+        $this -> showPage ('MainpageView', $data_for_view);
+    }
+    
 }

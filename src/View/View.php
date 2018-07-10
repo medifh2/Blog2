@@ -1,15 +1,13 @@
 <?php
 namespace View;
-
 use Conf\LogoInfo;
-
 class View
 {
     static function pageGenerate ($file, $data_for_view = NULL)
     {
         $logo_info = new LogoInfo;
         $data_for_view['logo'] = $logo_info -> getData();
-        if ($_SESSION['is_login'])
+        if (isset($_SESSION['user_id']))
         {
             include 'UtopView.php';
         }

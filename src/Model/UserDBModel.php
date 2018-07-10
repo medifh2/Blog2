@@ -26,7 +26,12 @@ class UserDBModel extends DBModel
             $st_insert->bindParam(':userconfigs', $user['user_configs']);
             $st_insert->bindParam(':status', $user['status']);
             $st_insert->execute();
-            return true;
+            $st = $pdo -> prepare ('SELECT ID FROM Blog.users WHERE (Login = :login)');
+            $st -> bindParam(':login',$user['login']);
+            $st -> execute();
+            $res = $st -> fetchAll();
+            if ($res) $res = $res[0];
+            return $res['ID'];
         }
     }
 
@@ -177,6 +182,5 @@ class UserDBModel extends DBModel
         $st->execute();
         return true;
     }
-    
-    
+
 }

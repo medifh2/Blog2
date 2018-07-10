@@ -3,22 +3,21 @@ namespace Control;
 
 use Model\CommDBModel;
 use Model\PostDBModel;
-
+use Model\UserDBModel;
 class CommentController extends Controller
 {
 
     public function commentEditShow($comment_ID)
     {
 
-        if (!$_SESSION['is_login'])
+        if (!isset($_SESSION['user_id']))
         {
             $this -> showPage ('Error404View');
             return;
         }
         $connect = new CommDBModel;
-
         $comment = $connect -> getForIDComment($comment_ID);
-        if (!(($comment['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')))
+        if (!(($comment['Author'] == $this -> getUserInfo($_SESSION['user_id'])['Login']) || ($this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] == 'admin')))
         {
             $this -> showPage ('Error404View');
             return;
@@ -30,16 +29,17 @@ class CommentController extends Controller
 
     public function commentEditSave($comment_ID)
     {
-        if (!$_SESSION['is_login'])
+        if (!isset($_SESSION['user_id']))
         {
             $this -> showPage ('Error404View');
             return;
         }
 
         $connect = new CommDBModel;
+        $connect_u = new UserDBModel;
         $comment = $connect -> getForIDComment($comment_ID);
 
-        if (!(($comment['Author'] == $_SESSION['userdata']['login']) || ($_SESSION['userdata']['lvl'] == 'admin')))
+        if (!(($comment['Author'] == $this -> getUserInfo($_SESSION['user_id'])['Login']) || ($this -> getUserInfo($_SESSION['user_id'])['Accesslvl'] == 'admin')))
         {
             $this -> showPage ('Error404View');
             return;
@@ -62,7 +62,7 @@ class CommentController extends Controller
 
         $comment =
             [
-                'author' => $_SESSION['userdata']['login'],
+                'author' => $this -> getUserInfo($_SESSION['user_id'])['Login'],
                 'text' => $text,
                 'datepub' => date("y-m-d H:i:s "),
                 'comment_ID'=> $comment_ID
@@ -114,7 +114,7 @@ class CommentController extends Controller
 
     public function commentEditDelete($comment_ID)
     {
-        if (!$_SESSION['is_login'])
+        if (!isset($_SESSION['user_id']))
         {
             $this -> showPage ('Error404View');
             return;
@@ -122,7 +122,7 @@ class CommentController extends Controller
         $connect = new CommDBModel;
         $post_ID = $connect -> getForIDComment($comment_ID)['PostID'];
         $connect -> deleteComment($comment_ID);
-        $_SESSION['message'] = 'Sucsess';
+        $date_for_view['message'] = 'Sucsess';
         $host  = $_SERVER['HTTP_HOST'];
         $page = 'Location: http://'.$host.'/post/'.$post_ID;
         header($page);

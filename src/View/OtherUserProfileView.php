@@ -4,14 +4,16 @@
 <body> 
 <form class = "content">
     <h6 class = "success">
-        <?php if (isset($data_for_view['message'])) 
+        <?php if (isset($data_for_view['message']))
+        {
             echo $data_for_view['message']."<br>";
-        $data_for_view['message'] = 0; 
+            unset ($data_for_view['message']);
+        }
         ?>
     </h6>
     <h1><?php echo ($data_for_view['other_user_data']['Username']) ?></h1>
 
-    <?php if ($_SESSION['is_login']) if ($_SESSION['userdata']['lvl'] == 'admin') {?>
+    <?php if (isset($_SESSION['user_id'])) if ($data_for_view['Accesslvl'] == 'admin') {?>
         <a   href = "/otheruseredit/<?php echo $data_for_view['other_user_data']['ID'] ?>" > [edit] </a>
     <?php } ?>
 

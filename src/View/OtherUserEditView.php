@@ -34,7 +34,7 @@
                 if (isset($_POST['about'])) {
                     echo $_POST['about'];
                 }
-                else echo $_SESSION['userdata']['about_me']
+                else echo $data_for_view['about_me']
                 ?></textarea><br>
         </li>
     </ul>

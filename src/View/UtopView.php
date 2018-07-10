@@ -9,7 +9,8 @@
 <nav>
     <img class = 'logo' src = '/images/logo/<?php echo $data_for_view['logo'] ?>'>
     <P class = "menu">
-      <?php if ($_SESSION['userdata']['lvl'] == 'admin') {?> <a  href = "/usertable"> [users] </a> | <?php  } ?> <a  href = "/"> Blog feed </a> | <a href = "/userpage"> My blog </a>| <a href = "/profile"> My profile </a>
+        <!--<?//php if ($data_for_view['user']['Accesslvl'] == 'admin') {?> <a  href = "/usertable"> [users] </a> | <?php  //} ?> -->
+        <a  href = "/"> Blog feed </a> | <a href = "/userpage"> My blog </a>| <a href = "/profile"> My profile </a>
         | <a href = "/logout"> Logout </a> <br>
     <form class = "search" method = "GET" action = "/search">
         <input type = "text" name = "query"

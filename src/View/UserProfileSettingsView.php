@@ -14,12 +14,12 @@
         
         <li>
             <label >Your Login:</label>
-            <label><?php echo $_SESSION['userdata']['login'] ?></label><br>
+            <label><?php echo $data_for_view['user']['Login'] ?></label><br>
         </li>
         
         <li>
             <label for = "n_username">Username:</label>
-            <input type = "text" name = "n_username" placeholder = <?php echo $_SESSION['userdata']['username'] ?>  ><br>
+            <input type = "text" name = "n_username" placeholder = <?php echo $data_for_view['user']['Username'] ?>  ><br>
         </li>
 
         <li>
@@ -38,7 +38,7 @@
                 if (isset($_POST['n_about'])) {
                     echo $_POST['n_about'];
                     }
-                else echo $_SESSION['userdata']['about_me']
+                else echo $data_for_view['user']['About_me']
                 ?></textarea><br>
         </li>
 
