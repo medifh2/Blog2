@@ -1,7 +1,6 @@
 <?php
 
     session_start();
-    if (!isset($_SESSION['is_login'])) $_SESSION['is_login'] = 0;
     if (!isset($_SESSION['error_message'])) $_SESSION['error_message'] = 0;
     if (!isset($_SESSION['Numposts'])) $_SESSION['Numposts'] = 0;
     require_once 'loader.php';
