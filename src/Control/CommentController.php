@@ -110,5 +110,5 @@ class CommentController extends Controller
         $page = 'Location: http://' . $host . '/post/' . $post_ID;
         header($page);
     }
-
+    
 }

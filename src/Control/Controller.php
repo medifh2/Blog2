@@ -49,11 +49,6 @@ class Controller
         return true;
     }
 
-    public function isLogged()
-    {
-        return isset($_SESSION['user_id']);
-    }
-
     public function showError404Page()
     {
         $this->showPage('Error404View');

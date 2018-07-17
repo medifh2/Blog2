@@ -1,8 +1,9 @@
 <?php
-foreach ($data_for_view["posts"] as $post):?>
+foreach ($data_for_view["posts"] as $data_for_view['post']):?>
     <div class="put">
-        <a class="link" href="post/<?php echo $post['ID'] ?>"> Full </a>
+        <a class="link" href="post/<?php echo $data_for_view['post']['ID'] ?>"> Full </a>
         <?php include "PostView.php" ?>
+        <a class="link" href="post/<?php echo $data_for_view['post']['ID'] ?>"> Full </a>
     </div>
 <?php endforeach; ?>
 

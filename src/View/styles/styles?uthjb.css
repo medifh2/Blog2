@@ -73,12 +73,13 @@ div.put
 div.fullpost
 {
     width:800px;
-    margin-right: 30%;
-    margin-left: 30%;
-    margin-top: 10%;
     background: whitesmoke;
     border: 1px solid powderblue;
     position:relative;
+    max-width:40%;
+    margin-right: 30%;
+    margin-left: 30%;
+    margin-top: 2%;
 }
 
 h6.error
@@ -214,6 +215,9 @@ h5 {
     margin-left: 0;
     margin-right: 0;
     font-weight: lighter;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
 }
 
 h5.comment {

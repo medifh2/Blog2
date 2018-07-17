@@ -12,7 +12,7 @@ class BlogController extends Controller
     {
 
     }
-    
+
     public function postEditShow($post_ID)
     {
 
@@ -93,9 +93,9 @@ class BlogController extends Controller
         }
     }
 
-    public function showBlogCreatePage()
+    public function showPostCreatePage()
     {
-        $this->showPage('BlogCreateView');
+        $this->showPage('PostCreateView');
     }
 
     public function createPost()
@@ -105,7 +105,7 @@ class BlogController extends Controller
         if ((!isset($_POST["text"]) && !isset($_FILES["image"])) || (!$_POST["title"])) {
             $error_message = 'Wrong Data';
             $data_for_view['error_message'] = $error_message;
-            $this->showPage('BlogCreateView', $data_for_view);
+            $this->showPage('PostCreateView', $data_for_view);
             return;
         }
         if (isset ($_FILES['image'])) {
@@ -137,7 +137,7 @@ class BlogController extends Controller
         } else {
             $error_message = 'Unknown error';
             $data_for_view ['error_message'] = $error_message;
-            $this->showPage('BlogCreateView', $data_for_view);
+            $this->showPage('PostCreateView', $data_for_view);
         }
     }
 
@@ -158,7 +158,7 @@ class BlogController extends Controller
 
         $data_for_view['is_users_check'] = isset($_GET['users']);
         $data_for_view['is_posts_check'] = isset($_GET['posts']);
-        $data_for_view['query'] =  ($query) ? $query : false;
+        $data_for_view['query'] = ($query) ? $query : false;
 
         if ($query) {
             $posts = $connect_post->getForQuery($query);
@@ -192,16 +192,12 @@ class BlogController extends Controller
         $post = $connect_postDB->getForIDPost($post_ID);
 
         $connect_commDB = new CommDBModel;
-        if ($comments = $connect_commDB->getForPostIDComment($post_ID)) ;
-        else {
-            $comments = false;
-        }
+        if ($data_for_view['comments'] = $connect_commDB->getForPostIDComment($post_ID)) ;
 
         $data_for_view =
             [
                 'post' => $post,
                 'post_ID' => $post_ID,
-                'comments' => $comments,
             ];
         $this->showPage('FullPostView', $data_for_view);
     }
@@ -236,6 +232,11 @@ class BlogController extends Controller
         $data_for_view ['amount_pages'] = $amount_pages;
         $data_for_view ['current_page'] = $page_number;
         $this->showPage('MainpageView', $data_for_view);
+    }
+
+    public static function HasImage($post)
+    {
+        ($post['Image'] !== 'images/');
     }
 
 }

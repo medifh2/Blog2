@@ -185,4 +185,36 @@ class UserController extends Controller
         header($location);
     }
 
+    public static function isLogged()
+    {
+        return isset($_SESSION['user_id']);
+    }
+
+    public static function isBanned()
+    {
+        if (UserController::isLogged()) {
+            $connect = new UserDBModel;
+            $user = $connect->getForID($_SESSION['user_id']);
+            return ($user['Status'] == 'ban');
+        } else return false;
+    }
+
+    public static function isLoggedAdmin()
+    {
+        if (UserController::isLogged()) {
+            $connect = new UserDBModel;
+            $user = $connect->getForID($_SESSION['user_id']);
+            return ($user['Accesslvl'] === 'admin');
+        } else return false;
+    }
+
+    public static function HasEditRights($post)
+    {
+        if (UserController::isLogged()) {
+            $connect = new UserDBModel;
+            $user = $connect->getForID($_SESSION['user_id']);
+            return (($user['Login'] == $post['Author']) || (UserController::isLoggedAdmin()));
+        } else return false;
+    }
+
 }

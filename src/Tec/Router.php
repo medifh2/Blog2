@@ -21,7 +21,7 @@ class Router
             'user' => ['Control' => 'UserController', 'Action' => 'showOtherUserProfile' , 'RoleAccess' => 'anyone'],
             'logout' => ['Control' => 'UserController', 'Action' => 'logout', 'RoleAccess' => 'reader'],
             'changeabout' => ['Control' => 'UserController', 'Action' => 'changeAbout', 'RoleAccess' => 'author'],
-            'blogcreate' => ['Control' => 'BlogController', 'Action' => 'showBlogCreatePage', 'RoleAccess' => 'writer'],
+            'blogcreate' => ['Control' => 'BlogController', 'Action' => 'showPostCreatePage', 'RoleAccess' => 'writer'],
             'settings' => ['Control' => 'UserController', 'Action' => 'showSettings', 'RoleAccess' => 'author'],
             'css' => ['Control' => 'UserController', 'Action' => 'showSettings', 'RoleAccess' => 'author'],
             'page' => ['Control' => 'BlogController', 'Action' => 'showNPage', 'RoleAccess' => 'anyone'],
