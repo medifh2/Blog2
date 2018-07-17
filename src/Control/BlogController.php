@@ -18,10 +18,6 @@ class BlogController extends Controller
 
         $connect = new PostDBModel;
         $post = $connect->getForIDPost($post_ID);
-        if (!(($post['Author'] == $this->getUserInfo()['Login']) || ($this->getUserInfo()['Accessslvl'] == 'admin'))) {
-            $this->showPage('Error404View');
-            return;
-        }
 
         $data_for_view ['post'] = $post;
         $this->showPage('PostEditView', $data_for_view);
