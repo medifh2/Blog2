@@ -89,6 +89,16 @@ class UserDBModel extends DBModel
         return $res[0];
     }
 
+    function getForLogin($login)
+    {
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare ('SELECT * FROM Blog.users WHERE (Login = :login)');
+        $st -> bindParam(':login', $login);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res[0];
+    }
+
     function editUser($user)
     {
         $pdo = $this -> pdo;

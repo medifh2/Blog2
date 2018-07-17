@@ -1,52 +1,39 @@
-<!DOCTYPE html>
-
-<html>
 <body>
+<div class=content>
+    <form action="edituser" method="post" name="edit_form">
 
-<form class="form" action = "edituser" method = "post" name = "edit_form">
-    <h6 class = 'error'>
-        <?php if (isset($data_for_view['error_message'])) 
-            echo $data_for_view['error_message'].'<br>';
-        $data_for_view['error_message'] = 0;
-        ?>
-    </h6>
-    <ul>
-        
-        <li>
-            <label >Your Login:</label>
-            <label><?php echo $data_for_view['user']['Login'] ?></label><br>
-        </li>
-        
-        <li>
-            <label for = "n_username">Username:</label>
-            <input type = "text" name = "n_username" placeholder = <?php echo $data_for_view['user']['Username'] ?>  ><br>
-        </li>
+            <div class="form-group">
+                <h3> Your Login: </h3>
+                <h2><?php echo $data_for_view['user']['Login'] ?><br>
+                </h2>
+            </div>
 
-        <li>
-            <label for = "n_pass">New password:</label>
-            <input type = "password" name = "n_pass" placeholder = "New password"  ><br>
-        </li>
+            <div class="form-group">
+                <h3> Username:</h3>
+                <input type="text" name="n_username" placeholder= <?php echo $data_for_view['user']['Username'] ?>><br>
+            </div>
 
-        <li>
-            <label for = "c_pass">Current password: </label>
-            <input type = "password" name = "c_pass" placeholder = "Current password" required ><br>
-        </li>
+            <div class="form-group">
+                <h3>New password:</h3>
+                <input type="password" name="n_pass" placeholder="New password"><br>
+            </div>
 
-        <li>
-            <label for = "n_about">About me:</label>
-            <textarea name = "n_about" title = "n_about" ><?php
+            <div class="form-group">
+                <h3>Current password:</h3>
+                <input type="password" name="c_pass" placeholder="Current password" required><br>
+            </div>
+
+            <div class="form-group">
+                <h3> About me: </h3>
+            <textarea name="n_about" title="n_about"><?php
                 if (isset($_POST['n_about'])) {
                     echo $_POST['n_about'];
-                    }
-                else echo $data_for_view['user']['About_me']
+                } else echo $data_for_view['user']['About_me']
                 ?></textarea><br>
-        </li>
+            </div>
 
-        <li>
-            <button class = "submit" type = "submit">Save changes</button>
-        </li>
+            <button class="btn btn-success" type="submit">Save changes</button>
 
-    </ul>
-</form>
+    </form>
+</div>
 </body>
-</html>

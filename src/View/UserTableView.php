@@ -1,46 +1,43 @@
-<!DOCTYPE html>
-
-<html>
 <body>
 
-    <h6 class = 'error'>
-        <?php if (isset($data_for_view['error_message']))
-            echo $data_for_view['error_message'].'<br>';
-        $data_for_view['error_message'] = 0;
-        ?>
-    </h6>
-        <table class = "users">
-            <tr>
-                <th>ID</th>
-                <th>Login</th>
-                <th>Username</th>
-                <th>About me</th>
-                <th>Access</th>
-                <th>Date of registration</th>
-            </tr>
-            <?php foreach ($data_for_view['all_users'] as $user)
-            { ?>
-                <tr>
-                    <th>
-                        <?php echo $user['ID'] ?>
-                    </th>
-                    <th>
-                        <input type = "text" name = "login:<?php echo $user['ID'] ?>" placeholder = <?php echo $user['Login'] ?> >
-                    </th>
-                    <th>
-                        <input type = "text" name = "username:<?php echo $user['ID'] ?>" placeholder = <?php echo $user['Username'] ?> >
-                    </th>
-                    <th>
-                        <input type = "text" name = "about:<?php echo $user['ID'] ?>" placeholder = <?php echo $user['About_me'] ?> >
-                    </th>
-                    <th>
-                        <input type = "text" name = "lvl:<?php echo $user['ID'] ?>" placeholder = <?php echo $user['Accesslvl'] ?> >
-                    </th>
-                    <th>
-                        <input type = "text" name = "reg_date:<?php echo $user['ID'] ?>" placeholder = <?php echo $user['RegDate'] ?> >
-                    </th>
-                </tr>
-            <?php } ?>
-        </table>
+<table class="table table-striped table-dark">
+    <thead>
+    <tr>
+        <th scope="col"> ID </th>
+        <th scope="col"> Login </th>
+        <th scope="col"> Username </th>
+        <th scope="col"> About me </th>
+        <th scope="col"> Access </th>
+        <th scope="col"> Date of registration </th>
+        <th scope="col"> Status </th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($data_for_view['all_users'] as $user) { ?>
+        <tr>
+            <th scope="row">
+                <?php echo $user['ID'] ?>
+            </th>
+            <td>
+                <?php echo $user['Login'] ?>
+            </td>
+            <td>
+                <?php echo $user['Username'] ?>
+            </td>
+            <td>
+                <?php echo $user['About_me'] ?>
+            </td>
+            <td>
+                <?php echo $user['Accesslvl'] ?>
+            </td>
+            <td>
+                <?php echo $user['RegDate'] ?>
+            </td>
+            <td>
+                <?php echo $user['Status'] ?>
+            </td>
+        </tr>
+    <?php } ?>
+    </tbody>
+</table>
 </body>
-</html>

@@ -1,36 +1,22 @@
-<!DOCTYPE html>
+<div class="content">
+<form class="content" method="post" action="registration">
 
-<html>
+    <h3>Registration</h3><br>
 
-<form class="form" method = "post" action = "registration">
+    <div class="form-group">
+        <input type="text" name="login" placeholder="Login" required/>
+    </div>
+    <div class="form-group">
+        <input type="text" name="username" placeholder="Username" required/>
+    </div>
+    <div class="form-group">
+        <input type="password" name="pass" placeholder="Password" required/>
+    </div>
+    <div class="form-group">
+        <input type="password" name="r_pass" placeholder="Repeat password" required/>
+    </div>
 
-    <h6 class = 'error'>
-        <?php if (isset($data_for_view['error_message']))
-            echo $data_for_view['error_message']."<br>";
-        $data_for_view['error_message'] = 0;
-        ?>
-    </h6>
+    <button class="btn btn-success" type="submit">Registration</button>
 
-    <ul>
-        <li>
-            <h3>Registration</h3><br>
-        </li>
-        <li>
-            <input type = "text" name = "login" placeholder="Login" required/>
-        </li>
-        <li>
-            <input type = "text" name = "username" placeholder="Username"  required/>
-        </li>
-        <li>
-            <input type = "password" name = "pass" placeholder="Password"  required/>
-        </li>
-        <li>
-            <input type = "password" name = "r_pass" placeholder="Repeat password"  required/>
-        </li>
-
-        <li>
-           <button class="submit" type="submit">Registration</button>
-        </li>
-    </ul>
 </form>
-</html>
+</div>

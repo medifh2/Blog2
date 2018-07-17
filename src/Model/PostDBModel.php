@@ -4,6 +4,8 @@ namespace Model;
 class PostDBModel extends DBModel
 {
 
+    const PUBLISHED = 'published';
+
     function addPost($post)
     {
         $pdo = $this -> pdo;
@@ -92,11 +94,35 @@ class PostDBModel extends DBModel
         $res = $st -> fetchAll();
         return $res;
     }
+
+    function getFromToPublishPosts($from, $to)
+    {
+        $status = $this::PUBLISHED;
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare ('SELECT * FROM Blog.posts WHERE (Status = :status) ORDER BY DatePub DESC LIMIT :from, :to ');
+        $st -> bindParam(':status', $status);
+        $st -> bindParam(':from', $from);
+        $st -> bindParam(':to', $to);
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res;
+    }
     
     function getAmountRows()
     {
         $pdo = $this -> pdo;
-        $st = $pdo -> prepare ('SELECT COUNT(*) FROM Blog.posts');
+        $st = $pdo -> prepare ('SELECT COUNT(*) FROM Blog.posts ');
+        $st -> execute();
+        $res = $st -> fetchAll();
+        return $res[0]['COUNT(*)'];
+    }
+
+    function getAmountPublishRows()
+    {
+        $status = $this::PUBLISHED;
+        $pdo = $this -> pdo;
+        $st = $pdo -> prepare ('SELECT COUNT(*) FROM Blog.posts WHERE (Status = :status)');
+        $st -> bindParam(':status', $status);
         $st -> execute();
         $res = $st -> fetchAll();
         return $res[0]['COUNT(*)'];

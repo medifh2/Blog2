@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html>
 <body>
 <form class = "content" method = "post" action = "/posteditsave/<?php echo $data_for_view ['post']['ID'] ?>">
-   
-    <h6 class = 'error'>
-        <?php if (isset($data_for_view['error_message']))
-            echo $data_for_view['error_message']."<br>";
-        $data_for_view['error_message'] = 0;
-        ?>
-    </h6>
-    
+
     <input type = "text" name = "title" value = <?php echo $data_for_view ['post']['Title'] ?>  >
     <br>
     <input type = "hidden" name = "size" value = "30000" />
@@ -26,10 +17,9 @@
         <?php } ?>
     >
     <br><br>
-    <button class = "submit" type = "submit"> Save </button>
+    <button class = "btn btn-success" type = "submit"> Save </button>
 </form>
 <form class = "bonus" method = "post" action = "/posteditdelete/<?php echo $data_for_view ['post']['ID'] ?>">
-    <button class = "submitdelete" type = "submit"> Delete post </button>
+    <button class = "btn btn-danger" type = "submit"> Delete post </button>
 </form>
 </body>
-</html>

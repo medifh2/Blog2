@@ -13,7 +13,7 @@
     </h6>
     <h1><?php echo ($data_for_view['other_user_data']['Username']) ?></h1>
 
-    <?php if (isset($_SESSION['user_id'])) if ($data_for_view['Accesslvl'] == 'admin') {?>
+    <?php  if (isset($_SESSION['user_id'])) if ($data_for_view['user']['Accesslvl'] == 'admin') { ?>
         <a   href = "/otheruseredit/<?php echo $data_for_view['other_user_data']['ID'] ?>" > [edit] </a>
     <?php } ?>
 
