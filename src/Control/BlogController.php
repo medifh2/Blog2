@@ -13,56 +13,51 @@ class BlogController extends Controller
 
     }
 
-    public function postEditShow($post_ID)
+    public function showEditPost($post_ID)
     {
 
         $connect = new PostDBModel;
         $post = $connect->getForIDPost($post_ID);
-
         $data_for_view ['post'] = $post;
         $this->showPage('PostEditView', $data_for_view);
     }
 
-    public function postEditDelete($post_ID)
+    public function deletePost($post_ID)
     {
         $connect = new PostDBModel;
         $connect->deletePost($post_ID);
         $data_for_view["message"] = "Success";
-        $this->showPage('MainpageView');
+        $host = $_SERVER['HTTP_HOST'];
+        $route = 'Location: http://' . $host . '/';
+        header($route);
     }
 
-    public function postEditSave($post_ID)
+    public function savePost($post_ID = NULL)
     {
-
+        $page_back = ($post_ID == NULL) ? 'PostCreateView' : 'PostEditView';
         $connect = new PostDBModel;
-        $post = $connect->getForIDPost($post_ID);
+        if ($post_ID) {
+            $post_last = $connect->getForIDPost($post_ID);
+            $data_for_view ['post'] = $post_last;
 
-        if (!(($post['Author'] == $this->getUserInfo()['Login']) || ($this->getUserInfo()['Accessslvl'] == 'admin'))) {
-            $this->showPage('Error404View');
-            return;
         }
 
-        if ((!isset($_POST["text"]) && !isset($_FILES["image"])) || (!$_POST["title"])) {
-            $data_for_view ['post'] = $post;
+        if ((!isset($_POST["text"]) && !$_FILES['image']['name']) || (!$_POST["title"])) {
             $error_message = 'Wrong Data';
             $data_for_view['error_message'] = $error_message;
-            $this->showPage('PostEditView', $data_for_view);
+            $this->showPage($page_back, $data_for_view);
             return;
         }
 
-        if (isset ($_FILES['image'])) {
+        if ($_FILES['image']['name']) {
             $target = "images/" . ($_FILES['image']['name']);
             $image = $_FILES['image']['name'];
             move_uploaded_file($_FILES['image']['tmp_name'], $target);
-        } else $image = "";
+        } else {
+            $image = "";
+        }
 
-        if (isset($_POST["status"])) {
-            $status = 'published';
-        } else $status = 'unpublished';
-
-//        if (isset ($_POST['text'])) {
-//            $text = $_POST['text'];
-//        } else {}$text = "";
+        $status = (isset($_POST["status"])) ? 'published' : 'unpublished';
 
         $text = isset($_POST['text']) ? $_POST['text'] : '';
 
@@ -71,77 +66,50 @@ class BlogController extends Controller
                 'title' => $_POST["title"],
                 'author' => $this->getUserInfo()['Login'],
                 'text' => $text,
-                'image' => 'images/' . $image,
+                'image' => '/images/' . $image,
                 'datepub' => date("y-m-d H:i:s "),
                 'status' => $status,
                 'post_ID' => $post_ID
             ];
-        if ($connect->editPost($post)) {
-            $host = $_SERVER['HTTP_HOST'];
-            $page = 'Location: http://' . $host . '/post/' . $post_ID;
-            header($page);
+        if ($post_ID) {
+            $post['post_ID'] = $post_ID;
+            if (!$_FILES['image']['name']) {
+                $post['image'] = $post_last['Image'];
+            }
+            $res = $connect->editPost($post);
         } else {
-            $post = $connect->getForIDPost($post_ID);
+            $res = $connect->addPost($post);
+        }
+        if ($res) {
+            $host = $_SERVER['HTTP_HOST'];
+            $route = 'Location: http://' . $host . '/userpage';
+            header($route);
+        } else {
             $data_for_view ['post'] = $post;
             $error_message = 'Unknown error';
             $data_for_view ['error_message'] = $error_message;
-            $this->showPage('PostEditView', $data_for_view);
+            $this->showPage($page_back, $data_for_view);
         }
     }
 
-    public function showPostCreatePage()
+    public function showPostCreate()
     {
         $this->showPage('PostCreateView');
     }
 
-    public function createPost()
+    public function showUserBlog($page_number = 1)
     {
-
+        $page_number--;
+        $from = 10 * $page_number;
+        $to = $from + 10;
         $connect = new PostDBModel;
-        if ((!isset($_POST["text"]) && !isset($_FILES["image"])) || (!$_POST["title"])) {
-            $error_message = 'Wrong Data';
-            $data_for_view['error_message'] = $error_message;
-            $this->showPage('PostCreateView', $data_for_view);
-            return;
-        }
-        if (isset ($_FILES['image'])) {
-            $target = "images/" . ($_FILES['image']['name']);
-            $image = $_FILES['image']['name'];
-            move_uploaded_file($_FILES['image']['tmp_name'], $target);
-        } else $image = "";
-
-        if (isset($_POST["status"])) {
-            $status = 'published';
-        } else $status = 'unpublished';
-
-        if (isset ($_POST['text'])) {
-            $text = $_POST['text'];
-        } else $text = "";
-        $post =
-            [
-                'title' => $_POST["title"],
-                'author' => $this->getUserInfo()['Login'],
-                'text' => $text,
-                'image' => 'images/' . $image,
-                'datepub' => date("y-m-d H:i:s "),
-                'status' => $status,
-            ];
-        if ($connect->addPost($post)) {
-            $host = $_SERVER['HTTP_HOST'];
-            $page = 'Location: http://' . $host . '/userpage';
-            header($page);
-        } else {
-            $error_message = 'Unknown error';
-            $data_for_view ['error_message'] = $error_message;
-            $this->showPage('PostCreateView', $data_for_view);
-        }
-    }
-
-    public function showUserBlog()
-    {
-        $connect = new PostDBModel;
-        $userposts = $connect->getForLoginPost($this->getUserInfo()['Login']);
-        $data_for_view['posts'] = $userposts;
+        $posts = $connect->getFromToForLoginPosts($from, $to, $this->getUserInfo()['Login']);
+        $data_for_view ['posts'] = $posts;
+        $amount_posts = $connect->getAmountPublishRowsForLogin($this->getUserInfo()['Login']);
+        $amount_pages = $amount_posts / 10;
+        $amount_pages = ceil($amount_pages);
+        $data_for_view ['amount_pages'] = $amount_pages;
+        $data_for_view ['current_page'] = $page_number;
         $this->showPage('UserBlogView', $data_for_view);
     }
 
@@ -177,7 +145,7 @@ class BlogController extends Controller
         $this->showPage('SearchResultView', $data_for_view);
     }
 
-    public function fullPost($route_data)
+    public function showFullPost($route_data)
     {
         if (!$route_data) {
             $this->showPage('Error404View');
@@ -198,11 +166,11 @@ class BlogController extends Controller
         $this->showPage('FullPostView', $data_for_view);
     }
 
-    public function showMainPage()
+    public function showMainPage($page_number = 1)
     {
-        $page_number = 0;
-        $from = 0;
-        $to = 10;
+        $page_number--;
+        $from = 10 * $page_number;
+        $to = $from + 10;
         $connect = new PostDBModel;
         $posts = $connect->getFromToPublishPosts($from, $to);
         $data_for_view ['posts'] = $posts;
@@ -211,28 +179,17 @@ class BlogController extends Controller
         $amount_pages = ceil($amount_pages);
         $data_for_view ['amount_pages'] = $amount_pages;
         $data_for_view ['current_page'] = $page_number;
-        $this->showPage('MainpageView', $data_for_view);
+        $this->showPage('MainPageView', $data_for_view);
     }
 
-    public function showNPage($page_number)
+    public static function hasImage($post)
     {
-        $page_number--;
-        $connect = new PostDBModel;
-        $from = 10 * $page_number;
-        $to = $from + 10;
-        $all_posts = $connect->getFromToPosts($from, $to);
-        $data_for_view['all_posts'] = $all_posts;
-        $amount_posts = $connect->getAmountRows();
-        $amount_pages = $amount_posts / 10;
-        $amount_pages = ceil($amount_pages);
-        $data_for_view ['amount_pages'] = $amount_pages;
-        $data_for_view ['current_page'] = $page_number;
-        $this->showPage('MainpageView', $data_for_view);
+        return ($post['Image'] !== '/images/');
     }
 
-    public static function HasImage($post)
+    public static function isPublish($post)
     {
-        ($post['Image'] !== 'images/');
+        return ($post['Status'] == 'published');
     }
 
 }

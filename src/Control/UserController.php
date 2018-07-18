@@ -8,22 +8,18 @@ class UserController extends Controller
 
     public function showSettings()
     {
-        $this->showPage('UserProfileSettingsView');
+        $this->showPage('UserEditView');
     }
 
-    public function showUserProfile()
+    public function showProfile($user_id = NULL)
     {
-        $this->showPage('UserProfileView');
-    }
-
-    public function showOtherUserProfile($user_id)
-    {
-
+        if ($user_id == NULL) {
+            $user_id = $_SESSION['user_id'];
+        }
         $connect = new UserDBModel;
         $user = $connect->getForID($user_id);
-        $user['ID'] = $user_id;
-        $data_for_view['other_user_data'] = $user;
-        $this->showPage('OtherUserProfileView', $data_for_view);
+        $data_for_view['user'] = $user;
+        $this->showPage('ProfileView', $data_for_view);
     }
 
     public function logout()
@@ -36,31 +32,28 @@ class UserController extends Controller
 
     public function login()
     {
-        if (!isset($_POST['pass'])) {
+        if (!isset($_POST["login"])||!isset($_POST["pass"])) {
             $this->showPage('LogView');
             return;
         }
-
         $connect = new UserDBModel;
         $login = $_POST["login"];
         $pass = md5($_POST["pass"]);
         if ($userdata = $connect->loginUser($login, $pass)) {
             $_SESSION['user_id'] = $userdata['ID'];
-            $this->showPage('UserProfileView');
+            $this->showPage('ProfileView');
         } else {
             $data_for_view['error_message'] = 'Wrong password or login';
             $this->showPage('LogView', $data_for_view);
         }
-
     }
 
     public function registration()
     {
-        if (!isset($_POST['pass'])) {
+        if (!isset($_POST["login"])||!isset($_POST["pass"])) {
             $this->showPage('RegView');
             return;
         }
-
         $connect = new UserDBModel;
 
         $_POST["pass"] = str_replace(' ', '', $_POST["pass"]);
@@ -88,11 +81,10 @@ class UserController extends Controller
             ];
         if ($user['login'] = $connect->addUser($user)) {
             $_SESSION['user_id'] = $user['login'];
-            $this->showPage('UserProfileView');
+            $this->showPage('ProfileView');
         } else {
             $date_for_view['error_message'] = 'A User with such data is already registered!';
             $this->showPage('RegView', $date_for_view);
-            return;
         }
     }
 
@@ -102,9 +94,7 @@ class UserController extends Controller
         $_POST["n_pass"] = str_replace(' ', '', $_POST["n_pass"]);
         $_POST["c_pass"] = str_replace(' ', '', $_POST["c_pass"]);
         $_POST["n_username"] = str_replace(' ', '', $_POST["n_username"]);
-        if ($_POST["n_pass"]) {
-            $n_pass = md5($_POST["n_pass"]);
-        } else $n_pass = false;
+        $n_pass = ($_POST["n_pass"]) ? md5($_POST["n_pass"]): $n_pass = false;
         $c_pass = md5($_POST["c_pass"]);
         $user =
             [
@@ -116,11 +106,11 @@ class UserController extends Controller
             ];
         if ($connect->editUser($user)) {
             $data_for_view['message'] = 'Changes were saved';
-            $this->showPage('UserProfileView', $data_for_view);
+            $this->showPage('ProfileView', $data_for_view);
         } else {
             $error_message = "Wrong password";
             $data_for_view['error_message'] = $error_message;
-            $this->showPage('UserProfileSettingsView', $data_for_view);
+            $this->showPage('ProfileEditView', $data_for_view);
         }
     }
 
@@ -132,16 +122,16 @@ class UserController extends Controller
         $this->showPage('UserTableView', $data_for_view);
     }
 
-    public function editOtherUserDataShow($user_ID)
+    public function showEditUserData($user_ID)
     {
         $connect = new UserDBModel;
         $user = $connect->getForID($user_ID);
         $user ['ID'] = $user_ID;
         $data_for_view ['other_user_data'] = $user;
-        $this->showPage('OtherUserEditView', $data_for_view);
+        $this->showPage('ProfileEditView', $data_for_view);
     }
 
-    public function editSaveOtherUserData($user_ID)
+    public function saveEditedUserData($user_ID)
     {
         $connect = new UserDBModel;
         $user =
@@ -158,7 +148,7 @@ class UserController extends Controller
         header($location);
     }
 
-    public function editDeleteOtherUserData($user_ID)
+    public function deleteUserData($user_ID)
     {
         $connect = new UserDBModel;
         $connect->deleteUser($user_ID);
@@ -167,7 +157,7 @@ class UserController extends Controller
         header($location);
     }
 
-    public function editBanOtherUserData($user_ID)
+    public function banUser($user_ID)
     {
         $connect = new UserDBModel;
         $connect->banUser($user_ID);
@@ -176,7 +166,7 @@ class UserController extends Controller
         header($location);
     }
 
-    public function editUnbanOtherUserData($user_ID)
+    public function unbanUser($user_ID)
     {
         $connect = new UserDBModel;
         $connect->unbanUser($user_ID);
@@ -190,13 +180,18 @@ class UserController extends Controller
         return isset($_SESSION['user_id']);
     }
 
-    public static function isBanned()
+    public static function isBanned($user_id = NULL)
     {
-        if (UserController::isLogged()) {
+        if (($user_id == NULL) && UserController::isLogged()) {
+            $user_id = $_SESSION['user_id'];
+        }
+        if ($user_id != NULL) {
             $connect = new UserDBModel;
-            $user = $connect->getForID($_SESSION['user_id']);
+            $user = $connect->getForID($user_id);
             return ($user['Status'] == 'ban');
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     public static function isLoggedAdmin()
@@ -205,16 +200,60 @@ class UserController extends Controller
             $connect = new UserDBModel;
             $user = $connect->getForID($_SESSION['user_id']);
             return ($user['Accesslvl'] === 'admin');
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
-    public static function HasEditRights($post)
+    public static function isUserAdmin($user_id)
+    {
+        return (UserController::isLoggedAdmin() && ($_SESSION['user_id'] == $user_id));
+    }
+
+    public static function hasPostCreatingRights()
+    {
+        if (UserController::isLogged()) {
+            $connect = new UserDBModel;
+            $user = $connect->getForID($_SESSION['user_id']);
+            return ($user['Accesslvl'] !== 'reader');
+        } else {
+            return false;
+        }
+    }
+
+    public static function hasEditPostRights($post)
     {
         if (UserController::isLogged()) {
             $connect = new UserDBModel;
             $user = $connect->getForID($_SESSION['user_id']);
             return (($user['Login'] == $post['Author']) || (UserController::isLoggedAdmin()));
-        } else return false;
+        } else {
+            return false;
+        }
+    }
+
+    public static function checkAccess($author_id, $role)
+    {
+        $connect = new UserDBModel;
+        if (($role != 'anyone') && ($role != 'notlogin')) {
+            if (isset($_SESSION['user_id']))  $user_role = $connect->getForID($_SESSION['user_id'])['Accesslvl'];
+            else return false;
+            if ($user_role != 'admin') {
+                if (!(($role == $user_role) || ($_SESSION['user_id'] == $author_id) || ($role == 'reader'))) return false;
+            }
+        } else {
+            if (($role == 'notlogin') && (isset($_SESSION['user_id']))) return false;
+        }
+        return true;
+    }
+
+    public static function hasEditProfileRights($profile_id)
+    {
+        if (UserController::isLogged()) {
+            return (($profile_id == $_SESSION['user_id']) || (UserController::isLoggedAdmin()));
+        } else {
+            return false;
+        }
     }
 
 }

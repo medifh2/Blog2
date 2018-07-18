@@ -2,7 +2,7 @@
 foreach ($data_for_view["posts"] as $data_for_view['post']):?>
     <div class="put">
         <a class="link" href="post/<?php echo $data_for_view['post']['ID'] ?>"> Full </a>
-        <?php include "PostView.php" ?>
+        <?php View\View::attachUnit("PostView", $data_for_view); ?>
         <a class="link" href="post/<?php echo $data_for_view['post']['ID'] ?>"> Full </a>
     </div>
 <?php endforeach; ?>

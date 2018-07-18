@@ -1,5 +1,3 @@
-<body>
-
 <table class="table table-striped table-dark">
     <thead>
     <tr>
@@ -40,4 +38,3 @@
     <?php } ?>
     </tbody>
 </table>
-</body>

@@ -9,8 +9,8 @@
     </button>
     <div class=" navbar-collapse  collapse justify-content-end" id="navbarCollapse">
         <ul class="navbar-nav">
-            <?php include $files["nav_content"] . ".php"; ?>
-            <?php include "SearchForm.php"; ?>
+            <?php View\View::attachUnit($files["nav_content"], $data_for_view); ?>
+            <?php View\View::attachUnit("SearchForm", $data_for_view); ?>
         </ul>
     </div>
 </nav>

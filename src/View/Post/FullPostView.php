@@ -1,14 +1,13 @@
-<body>
 <div class="fullpost">
 
-        <?php include "PostView.php" ?>
+        <?php View\View::attachUnit("PostView", $data_for_view); ?>
 
         <div class="comment">
             <h3> Comments:</h3>
             <?php
             if (isset($data_for_view['comments'])) : ?>
                 <?php foreach ($data_for_view['comments'] as $data_for_view['comment']) : ?>
-                    <?php include "CommentView.php" ?>
+                    <?php View\View::attachUnit("CommentView", $data_for_view); ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
@@ -25,4 +24,4 @@
         <?php endif; ?>
 
 </div>
-</body>
+

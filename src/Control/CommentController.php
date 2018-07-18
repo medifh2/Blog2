@@ -8,7 +8,7 @@ use Model\UserDBModel;
 class CommentController extends Controller
 {
 
-    public function commentEditShow($comment_ID)
+    public function showEditComment($comment_ID)
     {
 
         if (!isset($_SESSION['user_id'])) {
@@ -26,7 +26,7 @@ class CommentController extends Controller
         $this->showPage('CommentEditView', $data_for_view);
     }
 
-    public function commentEditSave($comment_ID)
+    public function saveEditedComment($comment_ID)
     {
         $connect = new CommDBModel;
         $comment = $connect->getForIDComment($comment_ID);
@@ -71,6 +71,7 @@ class CommentController extends Controller
 
     public function createComment($post_ID)
     {
+        
         $connect_post = new PostDBModel;
         $connect_comm = new CommDBModel;
         if (!isset($_POST["text"])) {
@@ -96,7 +97,7 @@ class CommentController extends Controller
         $this->showPage('UserProfileView');
     }
 
-    public function commentEditDelete($comment_ID)
+    public function deleteComment($comment_ID)
     {
         if (!isset($_SESSION['user_id'])) {
             $this->showPage('Error404View');
