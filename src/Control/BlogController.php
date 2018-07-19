@@ -19,6 +19,7 @@ class BlogController extends Controller
         $connect = new PostDBModel;
         $post = $connect->getForIDPost($post_ID);
         $data_for_view ['post'] = $post;
+        print_r($data_for_view ['post']);
         $this->showPage('PostEditView', $data_for_view);
     }
 
@@ -64,7 +65,7 @@ class BlogController extends Controller
         $post =
             [
                 'title' => $_POST["title"],
-                'author' => $this->getUserInfo()['Login'],
+                'author' => $_SESSION['user_id'],
                 'text' => $text,
                 'image' => '/images/' . $image,
                 'datepub' => date("y-m-d H:i:s "),
@@ -97,49 +98,58 @@ class BlogController extends Controller
         $this->showPage('PostCreateView');
     }
 
-    public function showUserBlog($page_number = 1)
+    private function showNPage($page_number, $page_type, $query = NULL)
     {
         $page_number--;
         $from = 10 * $page_number;
         $to = $from + 10;
         $connect = new PostDBModel;
-        $posts = $connect->getFromToForLoginPosts($from, $to, $this->getUserInfo()['Login']);
-        $data_for_view ['posts'] = $posts;
-        $amount_posts = $connect->getAmountPublishRowsForLogin($this->getUserInfo()['Login']);
+        $amount_posts = 0;
+        $posts = NULL;
+        if ($page_type == 'UserBlog') {
+            $amount_posts = $connect->getAmountRowsForID($_SESSION['user_id']);
+            $posts = $connect->getFromToForIDPosts($from, $to, $_SESSION['user_id']);
+        } elseif ($page_type == 'MainPage') {
+            $amount_posts = $connect->getAmountPublishRows();
+            $posts = $connect->getFromToPublishPosts($from, $to);
+        } elseif (($page_type == 'search') && ($query)) {
+            $user_id = (UserController::isLogged()) ? $_SESSION['user_id'] : false;
+            $amount_posts = $connect->getAmountRowsForQuery($query, UserController::isLoggedAdmin(), $user_id);
+            $posts = $connect->getFromToForQuery($from, $to, $query, UserController::isLoggedAdmin(), $user_id);
+        }
         $amount_pages = $amount_posts / 10;
         $amount_pages = ceil($amount_pages);
         $data_for_view ['amount_pages'] = $amount_pages;
         $data_for_view ['current_page'] = $page_number;
+        $data_for_view ['posts'] = $posts;
+        return $data_for_view;
+    }
+
+    public function showUserBlog($page_number = 1)
+    {
+        $data_for_view = $this->showNPage($page_number, 'UserBlog');
         $this->showPage('UserBlogView', $data_for_view);
     }
 
-    public function search()
+    public function showMainPage($page_number = 1)
     {
-        $connect_post = new PostDBModel;
+        $data_for_view = $this->showNPage($page_number, 'MainPage');
+        $this->showPage('MainPageView', $data_for_view);
+    }
+
+    public function search($page_number = 1)
+    {
         $connect_user = new UserDBModel;
         $_GET['query'] = str_replace('+', ' ', $_GET['query']);
         $query = $_GET['query'];
-
+        $data_for_view = $this->showNPage($page_number, 'search', $query);
         $data_for_view['is_users_check'] = isset($_GET['users']);
         $data_for_view['is_posts_check'] = isset($_GET['posts']);
         $data_for_view['query'] = ($query) ? $query : false;
-
         if ($query) {
-            $posts = $connect_post->getForQuery($query);
-            $acc_posts = array();
-            foreach ($posts as $post) {
-                if (!isset($_SESSION['user_id'])) {
-                    if ($post['Status'] === 'published')
-                        $acc_posts[] = $post;
-                } else if (($post['Author'] === $this->getUserInfo()['Login']) || ($post['Status'] === 'published')) {
-                    $acc_posts[] = $post;
-                }
-            }
             $authors = $connect_user->getForQuery($query);
-            $data_for_view['posts'] = $acc_posts;
             $data_for_view['found_author'] = $authors;
         } else {
-            $data_for_view['posts'] = false;
             $data_for_view['found_author'] = false;
         }
         $this->showPage('SearchResultView', $data_for_view);
@@ -157,29 +167,8 @@ class BlogController extends Controller
 
         $connect_commDB = new CommDBModel;
         if ($data_for_view['comments'] = $connect_commDB->getForPostIDComment($post_ID)) ;
-
-        $data_for_view =
-            [
-                'post' => $post,
-                'post_ID' => $post_ID,
-            ];
+        $data_for_view['post'] = $post;
         $this->showPage('FullPostView', $data_for_view);
-    }
-
-    public function showMainPage($page_number = 1)
-    {
-        $page_number--;
-        $from = 10 * $page_number;
-        $to = $from + 10;
-        $connect = new PostDBModel;
-        $posts = $connect->getFromToPublishPosts($from, $to);
-        $data_for_view ['posts'] = $posts;
-        $amount_posts = $connect->getAmountPublishRows();
-        $amount_pages = $amount_posts / 10;
-        $amount_pages = ceil($amount_pages);
-        $data_for_view ['amount_pages'] = $amount_pages;
-        $data_for_view ['current_page'] = $page_number;
-        $this->showPage('MainPageView', $data_for_view);
     }
 
     public static function hasImage($post)

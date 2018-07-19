@@ -35,17 +35,6 @@ class UserDBModel extends DBModel
         }
     }
 
-    function getForQuery($query)
-    {
-        $pdo = $this->pdo;
-        $statement = "SELECT * FROM Blog.users  WHERE (Username LIKE '%" . $query . "%') OR (Login LIKE '%" . $query . "%')";
-        $st = $pdo->prepare($statement);
-        $st->bindParam(':query', $query);
-        $st->execute();
-        $res = $st->fetchAll();
-        return $res;
-    }
-
     function loginUser($login, $pass)
     {
         $pdo = $this->pdo;
@@ -55,6 +44,17 @@ class UserDBModel extends DBModel
         $st->execute();
         $res = $st->fetchAll();
         if ($res) $res = $res[0];
+        return $res;
+    }
+
+    function getForQuery($query)
+    {
+        $pdo = $this->pdo;
+        $statement = "SELECT * FROM Blog.users  WHERE (Username LIKE '%" . $query . "%') OR (Login LIKE '%" . $query . "%')";
+        $st = $pdo->prepare($statement);
+        $st->bindParam(':query', $query);
+        $st->execute();
+        $res = $st->fetchAll();
         return $res;
     }
 
@@ -82,7 +82,7 @@ class UserDBModel extends DBModel
     function getForID($id)
     {
         $pdo = $this->pdo;
-        $st = $pdo->prepare('SELECT * FROM Blog.users WHERE (ID = :id)');
+        $st = $pdo->prepare('SELECT ID, Login, Username, About_me, Accesslvl, RegDate, UserConfigs, Status FROM Blog.users WHERE (ID = :id)');
         $st->bindParam(':id', $id);
         $st->execute();
         $res = $st->fetchAll();
@@ -103,31 +103,43 @@ class UserDBModel extends DBModel
         return $res[0];
     }
 
-    function editUser($user)
+    function editUser($user, $is_admin)
     {
         $pdo = $this->pdo;
-        $st_check = $pdo->prepare("SELECT * FROM Blog.users WHERE Login = :login");
-        $st_check->bindParam(':login', $user['login']);
+        $st_check = $pdo->prepare("SELECT * FROM Blog.users WHERE ID = :user_ID");
+        $st_check->bindParam(':user_ID', $user['user_ID']);
         $st_check->execute();
         $res = $st_check->fetchAll();
-        if ($res[0]['Password'] !== $user['c_pass']) return false;
+        if (($res[0]['Password'] !== $user['c_pass'])&&(!$is_admin)) return false;
         if ($user['username']) {
-            $st_name = $pdo->prepare("UPDATE Blog.users SET Username = :username WHERE Login = :login");
-            $st_name->bindParam(':login', $user['login']);
+            $st_name = $pdo->prepare("UPDATE Blog.users SET Username = :username WHERE ID = :user_ID");
+            $st_name->bindParam(':user_ID', $user['user_ID']);
             $st_name->bindParam(':username', $user['username']);
             $st_name->execute();
         }
+        if ($user['login']) {
+            $st_pass = $pdo->prepare("UPDATE Blog.users SET Password = :pass WHERE ID = :user_ID");
+            $st_pass->bindParam(':user_ID', $user['user_ID']);
+            $st_pass->bindParam(':pass', $user['pass']);
+            $st_pass->execute();
+        }
         if ($user['pass']) {
-            $st_pass = $pdo->prepare("UPDATE Blog.users SET Password = :pass WHERE Login = :login");
-            $st_pass->bindParam(':login', $user['login']);
+            $st_pass = $pdo->prepare("UPDATE Blog.users SET Password = :pass WHERE ID = :user_ID");
+            $st_pass->bindParam(':user_ID', $user['user_ID']);
             $st_pass->bindParam(':pass', $user['pass']);
             $st_pass->execute();
         }
         if ($user['about_me']) {
-            $st_about = $pdo->prepare("UPDATE Blog.users SET About_me = :about_me WHERE Login = :login");
-            $st_about->bindParam(':login', $user['login']);
+            $st_about = $pdo->prepare("UPDATE Blog.users SET About_me = :about_me WHERE ID = :user_ID");
+            $st_about->bindParam(':user_ID', $user['user_ID']);
             $st_about->bindParam(':about_me', $user['about_me']);
             $st_about->execute();
+        }
+        if ($user['lvl']) {
+            $st_lvl = $pdo->prepare("UPDATE Blog.users SET Accesslvl = :lvl WHERE ID = :user_ID");
+            $st_lvl->bindParam(':user_ID', $user['user_ID']);
+            $st_lvl->bindParam(':lvl', $user['lvl']);
+            $st_lvl->execute();
         }
         return true;
     }

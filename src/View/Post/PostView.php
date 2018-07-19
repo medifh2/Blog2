@@ -2,7 +2,7 @@
 <h5>
     <?php echo $data_for_view['post']['Status'] ?>
     <br>
-    <?php echo $data_for_view['post']['Author'] . ",  " . $data_for_view['post']['DatePub'] ?>
+    <?php echo Control\UserController::getNameForID($data_for_view['post']['Author']) . ",  " . $data_for_view['post']['DatePub'] ?>
 </h5>
 <h4> <?php echo $data_for_view['post']['Text'] ?> </h4>
 <?php if (Control\BlogController::hasImage($data_for_view ['post'])) : ?>

@@ -2,6 +2,8 @@
 namespace View;
 
 use Conf\LogoInfo;
+use Control\Controller;
+use Control\UserController;
 
 class View
 {
@@ -113,7 +115,7 @@ class View
         $files['head'] = 'Top/Head';
         $files['nav'] = 'Top/Nav';
         if (isset($_SESSION['user_id']))
-            if ($data_for_view['user']['Accesslvl'] == 'admin') $files['nav_content'] = 'AdminNav';
+            if (UserController::isLoggedAdmin()) $files['nav_content'] = 'AdminNav';
             else $files['nav_content'] = 'IsLoginNav';
         else $files['nav_content'] = 'IsNotLoginNav';
 

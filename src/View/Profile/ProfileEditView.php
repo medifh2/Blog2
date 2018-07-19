@@ -1,7 +1,7 @@
 <div class=content>
-    <form action="edituser" method="post" name="edit_form">
+    <form action="/edituser/<?php echo $data_for_view['user']['ID'] ?>" method="post" name="edit_form">
         <div class="form-group">
-            <h3> Your Login: </h3>
+            <h3> Login: </h3>
             <?php if (Control\UserController::isLoggedAdmin()): ?>
                 <input type="text" name="login" value= <?php echo $data_for_view['user']['Login'] ?>>
             <?php else : ?>
@@ -19,10 +19,12 @@
             <input type="password" name="n_pass" placeholder="New password"><br>
         </div>
 
-        <div class="form-group">
-            <h3>Current password:</h3>
-            <input type="password" name="c_pass" placeholder="Current password" required><br>
-        </div>
+        <?php if (!Control\UserController::isLoggedAdmin()) : ?>
+            <div class="form-group">
+                <h3>Current password:</h3>
+                <input type="password" name="c_pass" placeholder="Current password" required><br>
+            </div>
+        <?php endif; ?>
 
         <div class="form-group">
             <h3> About me: </h3>
@@ -43,13 +45,13 @@
             <button class="btn btn-danger" type="submit"> Delete user</button>
         </form>
 
-        <?php if (\Control\UserController::isBanned($data_for_view ['user']['ID'])) : ?>
-            <form method="post" action="/otherusereditban/<?php echo $data_for_view ['other_user_data']['ID'] ?>">
+        <?php if (!\Control\UserController::isBanned($data_for_view ['user']['ID'])) : ?>
+            <form method="post" action="/userban/<?php echo $data_for_view ['user']['ID'] ?>">
                 <br>
                 <button class="btn btn-danger" type="submit"> Ban user</button>
             </form>
         <?php else : ?>
-            <form method="post" action="/otherusereditunban/<?php echo $data_for_view ['other_user_data']['ID'] ?>">
+            <form method="post" action="/userunban/<?php echo $data_for_view ['user']['ID'] ?>">
                 <br>
                 <button class="btn btn-success" type="submit"> Unban user</button>
             </form>

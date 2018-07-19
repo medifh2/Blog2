@@ -22,14 +22,14 @@ class PostDBModel extends DBModel
         return true;
     }
 
-    function getForLoginPost($login)
+    function getForIDPost($id)
     {
         $pdo = $this->pdo;
-        $st = $pdo->prepare('SELECT * FROM Blog.posts WHERE (Author = :login) ORDER BY DatePub Desc');
-        $st->bindParam(':login', $login);
+        $st = $pdo->prepare('SELECT * FROM Blog.posts WHERE (ID = :id) ORDER BY DatePub Desc');
+        $st->bindParam(':id', $id);
         $st->execute();
         $res = $st->fetchAll();
-        return $res;
+        return $res[0];
     }
 
     function getForQuery($query)
@@ -42,6 +42,7 @@ class PostDBModel extends DBModel
         $res = $st->fetchAll();
         return $res;
     }
+
 
     function getForDataPost($login_arr, $date_from, $date_to, $title)
     {
@@ -71,16 +72,6 @@ class PostDBModel extends DBModel
         return $res;
     }
 
-    function getForIDPost($post_ID)
-    {
-        $pdo = $this->pdo;
-        $st = $pdo->prepare('SELECT * FROM Blog.posts WHERE (ID = :ID)');
-        $st->bindParam(':ID', $post_ID);
-        $st->execute();
-        $res = $st->fetchAll();
-        return $res[0];
-    }
-
     function getFromToPosts($from, $to)
     {
         $pdo = $this->pdo;
@@ -90,6 +81,62 @@ class PostDBModel extends DBModel
         $st->execute();
         $res = $st->fetchAll();
         return $res;
+    }
+
+    function getFromToForQuery($from, $to, $query, $is_admin, $user_id)
+    {
+        $status = $this::PUBLISHED;
+        $pdo = $this->pdo;
+        if ($is_admin) {
+            $statement = "SELECT * FROM Blog.posts WHERE Title LIKE '%" . $query . "%' ORDER BY DatePub Desc LIMIT :from, :to ";
+        } elseif ($user_id) {
+            $statement = "SELECT * FROM Blog.posts WHERE (Title LIKE '%" . $query . "%') AND ((Status = :status) OR (Author = :user_id)) ORDER BY DatePub Desc LIMIT :from, :to ";
+        } else {
+            $statement = "SELECT * FROM Blog.posts WHERE (Title LIKE '%" . $query . "%') AND (Status = :status) ORDER BY DatePub Desc LIMIT :from, :to ";
+        }
+        $st = $pdo->prepare($statement);
+        $st->bindParam(':from', $from);
+        $st->bindParam(':to', $to);
+        if (!$is_admin) {
+            if ($user_id) {
+                $st->bindParam(':status', $status);
+                $st->bindParam(':user_id', $user_id);;
+            } else {
+                $st->bindParam(':status', $status);
+            }
+        }
+        $st->execute();
+        $res = $st->fetchAll();
+        return $res;
+    }
+
+    function getAmountRowsForQuery($query, $is_admin, $user_id)
+    {
+        $status = $this::PUBLISHED;
+        $pdo = $this->pdo;
+        if ($is_admin) {
+            $statement = "SELECT COUNT(*) FROM Blog.posts WHERE Title LIKE '%" . $query . "%' ORDER BY DatePub Desc ";
+        } elseif ($user_id) {
+            $statement = "SELECT COUNT(*) FROM Blog.posts WHERE ((Title LIKE '%" . $query . "%') AND ((Status = :status) OR (Author = :user_id))) ORDER BY DatePub Desc  ";
+        } else {
+            $statement = "SELECT COUNT(*) FROM Blog.posts WHERE ((Title LIKE '%" . $query . "%') AND (Status = :status)) ORDER BY DatePub Desc  ";
+        }
+        $st = $pdo->prepare($statement);
+        if (!$is_admin) {
+            if ($user_id) {
+                $st->bindParam(':status', $status);
+                $st->bindParam(':user_id', $user_id);;
+            } else {
+                $st->bindParam(':status', $status);
+            }
+        }
+        $st->bindParam(':status', $status);
+        $st->bindParam(':user_id', $user_id);
+        $st->execute();
+
+        $res = $st->fetchAll();
+        return $res[0]['COUNT(*)'];
+
     }
 
     function getFromToPublishPosts($from, $to)
@@ -105,7 +152,7 @@ class PostDBModel extends DBModel
         return $res;
     }
 
-    function getFromToForLoginPosts($from, $to, $login)
+    function getFromToForIDPosts($from, $to, $login)
     {
         $pdo = $this->pdo;
         $st = $pdo->prepare('SELECT * FROM Blog.posts WHERE (Author = :login) ORDER BY DatePub DESC LIMIT :from, :to ');
@@ -137,7 +184,7 @@ class PostDBModel extends DBModel
         return $res[0]['COUNT(*)'];
     }
 
-    function getAmountPublishRowsForLogin($login)
+    function getAmountRowsForID($login)
     {
         $pdo = $this->pdo;
         $st = $pdo->prepare('SELECT COUNT(*) FROM Blog.posts WHERE (Author = :login)');

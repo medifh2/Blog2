@@ -14,7 +14,6 @@ class Router
         $arr_route = explode('/', $route);
         $route = $arr_route[1];
         $route_data = (isset($arr_route[2])) ? $arr_route[2] : false;
-
         $routing = [
             '' => ['Control' => 'BlogController', 'Action' => 'showMainPage', 'RoleAccess' => 'anyone'],
             'login' => ['Control' => 'UserController', 'Action' => 'login', 'RoleAccess' => 'notlogin'],
@@ -27,7 +26,7 @@ class Router
             'settings' => ['Control' => 'UserController', 'Action' => 'showEditUserData', 'RoleAccess' => 'author'],
             'page' => ['Control' => 'BlogController', 'Action' => 'showMainPage', 'RoleAccess' => 'anyone'],
             'post' => ['Control' => 'BlogController', 'Action' => 'showFullPost', 'RoleAccess' => 'anyone'],
-            'edituser' => ['Control' => 'UserController', 'Action' => 'editUserData', 'RoleAccess' => 'author'],
+            'edituser' => ['Control' => 'UserController', 'Action' => 'saveEditedUserData', 'RoleAccess' => 'author'],
             'createpost' => ['Control' => 'BlogController', 'Action' => 'savePost', 'RoleAccess' => 'writer'],
             'createcomment' => ['Control' => 'CommentController', 'Action' => 'createComment', 'RoleAccess' => 'writer'],
             'commentedit' => ['Control' => 'CommentController', 'Action' => 'showEditComment', 'RoleAccess' => 'author'],
@@ -35,11 +34,9 @@ class Router
             'commenteditdelete' => ['Control' => 'CommentController', 'Action' => 'deleteComment', 'RoleAccess' => 'author'],
             'search' => ['Control' => 'BlogController', 'Action' => 'search', 'RoleAccess' => 'anyone'],
             'usertable' => ['Control' => 'UserController', 'Action' => 'showUsersTable', 'RoleAccess' => 'admin'],
-            'otheruseredit' => ['Control' => 'UserController', 'Action' => 'showEditUserData', 'RoleAccess' => 'admin'],
-            'otherusereditsave' => ['Control' => 'UserController', 'Action' => 'saveEditedUserData', 'RoleAccess' => 'admin'],
             'otherusereditdelete' => ['Control' => 'UserController', 'Action' => 'deleteUserData', 'RoleAccess' => 'admin'],
-            'otherusereditban' => ['Control' => 'UserController', 'Action' => 'banUserData', 'RoleAccess' => 'admin'],
-            'otherusereditunban' => ['Control' => 'UserController', 'Action' => 'unbanUserData', 'RoleAccess' => 'admin'],
+            'userban' => ['Control' => 'UserController', 'Action' => 'banUser', 'RoleAccess' => 'admin'],
+            'userunban' => ['Control' => 'UserController', 'Action' => 'unbanUser', 'RoleAccess' => 'admin'],
             'postedit' => ['Control' => 'BlogController', 'Action' => 'showEditPost', 'RoleAccess' => 'author'],
             'posteditsave' => ['Control' => 'BlogController', 'Action' => 'savePost', 'RoleAccess' => 'author'],
             'posteditdelete' => ['Control' => 'BlogController', 'Action' => 'deletePost', 'RoleAccess' => 'author'],

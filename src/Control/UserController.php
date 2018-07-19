@@ -25,9 +25,7 @@ class UserController extends Controller
     public function logout()
     {
         unset($_SESSION['user_id']);
-        $host = $_SERVER['HTTP_HOST'];
-        $route = 'Location: http://' . $host . '/';
-        header($route);
+        $this->showURLPage('/');
     }
 
     public function login()
@@ -88,32 +86,6 @@ class UserController extends Controller
         }
     }
 
-    public function editUserData()
-    {
-        $connect = new UserDBModel;
-        $_POST["n_pass"] = str_replace(' ', '', $_POST["n_pass"]);
-        $_POST["c_pass"] = str_replace(' ', '', $_POST["c_pass"]);
-        $_POST["n_username"] = str_replace(' ', '', $_POST["n_username"]);
-        $n_pass = ($_POST["n_pass"]) ? md5($_POST["n_pass"]): $n_pass = false;
-        $c_pass = md5($_POST["c_pass"]);
-        $user =
-            [
-                'login' => $this->getUserInfo()['Login'],
-                'pass' => $n_pass,
-                'c_pass' => $c_pass,
-                'username' => $_POST["n_username"],
-                'about_me' => $_POST["n_about"],
-            ];
-        if ($connect->editUser($user)) {
-            $data_for_view['message'] = 'Changes were saved';
-            $this->showPage('ProfileView', $data_for_view);
-        } else {
-            $error_message = "Wrong password";
-            $data_for_view['error_message'] = $error_message;
-            $this->showPage('ProfileEditView', $data_for_view);
-        }
-    }
-
     public function showUsersTable()
     {
         $connect = new UserDBModel;
@@ -126,53 +98,59 @@ class UserController extends Controller
     {
         $connect = new UserDBModel;
         $user = $connect->getForID($user_ID);
-        $user ['ID'] = $user_ID;
-        $data_for_view ['other_user_data'] = $user;
+        $data_for_view ['user'] = $user;
         $this->showPage('ProfileEditView', $data_for_view);
     }
 
     public function saveEditedUserData($user_ID)
     {
         $connect = new UserDBModel;
+        $_POST["n_pass"] = str_replace(' ', '', $_POST["n_pass"]);
+        $_POST["c_pass"] = str_replace(' ', '', $_POST["c_pass"]);
+        $_POST["n_username"] = str_replace(' ', '', $_POST["n_username"]);
+        $n_pass = ($_POST["n_pass"]) ? md5($_POST["n_pass"]): $n_pass = false;
+        $c_pass = md5($_POST["c_pass"]);
         $user =
             [
                 'user_ID' => $user_ID,
-                'login' => $_POST["login"],
-                'username' => $_POST["username"],
-                'about_me' => $_POST["about"],
+                'login' => $this->getUserInfo()['Login'],
+                'pass' => $n_pass,
+                'c_pass' => $c_pass,
+                'username' => $_POST["n_username"],
+                'about_me' => $_POST["n_about"],
                 'lvl' => $_POST["lvl"],
             ];
-        $connect->editOtherUser($user);
-        $host = $_SERVER['HTTP_HOST'];
-        $location = 'Location: http://' . $host . '/user/' . $user_ID;
-        header($location);
+        print_r ($_POST["n_about"]);
+        if ($connect->editUser($user, UserController::isLoggedAdmin())) {
+            $data_for_view['message'] = 'Changes were saved';
+            $this->showURLPage('/user/' . $user_ID);
+        } else {
+            $error_message = "Wrong password";
+            $data_for_view['error_message'] = $error_message;
+            $this->showPage('ProfileEditView', $data_for_view);
+        }
+
     }
 
     public function deleteUserData($user_ID)
     {
         $connect = new UserDBModel;
         $connect->deleteUser($user_ID);
-        $host = $_SERVER['HTTP_HOST'];
-        $location = 'Location: http://' . $host . '/usertable';
-        header($location);
+        $this->showURLPage('/usertable');
     }
 
     public function banUser($user_ID)
     {
         $connect = new UserDBModel;
         $connect->banUser($user_ID);
-        $host = $_SERVER['HTTP_HOST'];
-        $location = 'Location: http://' . $host . '/user/' . $user_ID;
-        header($location);
+        $this->showURLPage('/user/' . $user_ID);
     }
 
     public function unbanUser($user_ID)
     {
         $connect = new UserDBModel;
         $connect->unbanUser($user_ID);
-        $host = $_SERVER['HTTP_HOST'];
-        $location = 'Location: http://' . $host . '/user/' . $user_ID;
-        header($location);
+        $this->showURLPage('/user/' . $user_ID);
     }
 
     public static function isLogged()
@@ -188,7 +166,7 @@ class UserController extends Controller
         if ($user_id != NULL) {
             $connect = new UserDBModel;
             $user = $connect->getForID($user_id);
-            return ($user['Status'] == 'ban');
+            return ($user['Status'] == 'banned');
         } else {
             return false;
         }
@@ -224,9 +202,7 @@ class UserController extends Controller
     public static function hasEditPostRights($post)
     {
         if (UserController::isLogged()) {
-            $connect = new UserDBModel;
-            $user = $connect->getForID($_SESSION['user_id']);
-            return (($user['Login'] == $post['Author']) || (UserController::isLoggedAdmin()));
+            return (($_SESSION['user_id'] == $post['Author']) || (UserController::isLoggedAdmin()));
         } else {
             return false;
         }
@@ -253,6 +229,17 @@ class UserController extends Controller
             return (($profile_id == $_SESSION['user_id']) || (UserController::isLoggedAdmin()));
         } else {
             return false;
+        }
+    }
+
+    public static function getNameForID($user_id)
+    {
+        $connect = new UserDBModel;
+        if ($user = $connect->getForID($user_id)) {
+            return $user['Username'];
+        }
+        else{
+            return 'Unknown';
         }
     }
 

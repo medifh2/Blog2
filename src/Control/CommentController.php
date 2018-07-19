@@ -11,16 +11,8 @@ class CommentController extends Controller
     public function showEditComment($comment_ID)
     {
 
-        if (!isset($_SESSION['user_id'])) {
-            $this->showPage('Error404View');
-            return;
-        }
         $connect = new CommDBModel;
         $comment = $connect->getForIDComment($comment_ID);
-        if (!(($comment['Author'] == $this->getUserInfo()['Login']) || ($this->getUserInfo()['Accesslvl'] == 'admin'))) {
-            $this->showPage('Error404View');
-            return;
-        }
 
         $data_for_view ['comment'] = $comment;
         $this->showPage('CommentEditView', $data_for_view);
@@ -30,12 +22,7 @@ class CommentController extends Controller
     {
         $connect = new CommDBModel;
         $comment = $connect->getForIDComment($comment_ID);
-
-        if (!(($comment['Author'] == $this->getUserInfo()['Login']) || ($this->getUserInfo()['Accesslvl'] == 'admin'))) {
-            $this->showPage('Error404View');
-            return;
-        }
-
+        
         if (!isset($_POST["text"])) {
             $data_for_view ['comment'] = $comment;
             $error_message = 'Wrong Data';
@@ -50,16 +37,14 @@ class CommentController extends Controller
 
         $comment =
             [
-                'author' => $this->getUserInfo()['Login'],
+                'author' => $_SESSION['user_id'],
                 'text' => $text,
                 'datepub' => date("y-m-d H:i:s "),
                 'comment_ID' => $comment_ID
             ];
         if ($connect->editComment($comment)) {
             $post_ID = $connect->getForIDComment($comment_ID)['PostID'];
-            $host = $_SERVER['HTTP_HOST'];
-            $route = 'Location: http://' . $host . '/post/' . $post_ID;
-            header($route);
+            $this->showURLPage('/post/' . $post_ID);
         } else {
             $comment = $connect->getForIDComment($comment_ID);
             $data_for_view ['comment'] = $comment;
@@ -72,29 +57,23 @@ class CommentController extends Controller
     public function createComment($post_ID)
     {
         
-        $connect_post = new PostDBModel;
         $connect_comm = new CommDBModel;
         if (!isset($_POST["text"])) {
             $error_message = 'Empty comment';
             $data_for_view['error_message'] = $error_message;
             $this->showPage('FullPostView');
             return;
-        } else $error_message = false;
-        $post = $connect_post->getForIDPost($post_ID);
+        } 
 
         $comment =
             [
                 'post_ID' => $post_ID,
-                'author' => $post['Author'],
+                'author' => $_SESSION['user_id'],
                 'text' => $text = $_POST['text'],
                 'datepub' => date("y-m-d H:i:s ")
             ];
-        print_r($comment);
         $connect_comm->addComment($comment);
-        $host = $_SERVER['HTTP_HOST'];
-        $route = 'Location: http://' . $host . '/post/' . $post_ID;
-        header($route);
-        $this->showPage('UserProfileView');
+        $this->showURLPage('/post/' . $post_ID);
     }
 
     public function deleteComment($comment_ID)
@@ -107,9 +86,7 @@ class CommentController extends Controller
         $post_ID = $connect->getForIDComment($comment_ID)['PostID'];
         $connect->deleteComment($comment_ID);
         $date_for_view['message'] = 'Sucsess';
-        $host = $_SERVER['HTTP_HOST'];
-        $page = 'Location: http://' . $host . '/post/' . $post_ID;
-        header($page);
+        $this->showURLPage('/post/' . $post_ID);
     }
     
 }
