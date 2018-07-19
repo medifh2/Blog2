@@ -39,7 +39,7 @@ class UserController extends Controller
         $pass = md5($_POST["pass"]);
         if ($userdata = $connect->loginUser($login, $pass)) {
             $_SESSION['user_id'] = $userdata['ID'];
-            $this->showPage('ProfileView');
+            $this->showURLPage('/profile');
         } else {
             $data_for_view['error_message'] = 'Wrong password or login';
             $this->showPage('LogView', $data_for_view);
