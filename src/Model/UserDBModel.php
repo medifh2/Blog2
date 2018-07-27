@@ -12,8 +12,9 @@ class UserDBModel extends DBModel
         $st_check->bindParam(':username', $user['username']);
         $st_check->execute();
         $res = $st_check->fetchAll();
-        if ($res) return false;
-        else {
+        if ($res) {
+            return false;
+        } else {
             $st_insert = $pdo->prepare("INSERT INTO Blog.users 
             (Login, Password, Username, About_me, Accesslvl, RegDate, UserConfigs, Status ) 
             VALUES (:login, :pass, :uname, :about, :lvl, :regdate, :userconfigs, :status)");
